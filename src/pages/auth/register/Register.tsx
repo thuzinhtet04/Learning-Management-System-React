@@ -1,22 +1,39 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+// import { RadioGroup, RadioGroupItem } from '';
 import Footer from '@/Layouts/Footer';
 import Figure from '@/assets/undraw_hello_ccwj.svg';
 import { useTheme } from '@/provider/theme-provide';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { EyeIcon, EyeOff, LockKeyhole, Mail, Loader2 } from 'lucide-react';
+import {
+  EyeIcon,
+  EyeOff,
+  LockKeyhole,
+  Mail,
+  Loader2,
+  User,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { useMutation } from '@tanstack/react-query';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Label } from '@radix-ui/react-label';
+import { RadioGroup } from '@radix-ui/react-dropdown-menu';
 
 const registerSchema = z
   .object({
+    username: z.string().min(3, 'Username must be at least 3 characters'),
     email: z.string().email('Please enter a valid email'),
     password: z.string().min(8, 'Password must be at least 8 characters'),
     confirmPassword: z.string(),
+    role: z
+      .string()
+      .refine((val) => val === 'instructor' || val === 'student', {
+        message: 'Please select a role',
+        path: ['role'],
+      }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -50,8 +67,11 @@ const Register = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            username: data.username,
             email: data.email,
             password: data.password,
+            password_confirmation: data.confirmPassword,
+            role: data.role,
           }),
         }
       );
@@ -71,7 +91,8 @@ const Register = () => {
   });
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    registerUser(data);
+    // registerUser(data);
+    console.log(data)
   };
 
   return (
@@ -104,10 +125,32 @@ const Register = () => {
           </h1>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-4">
+              {/* Username field */}
+              <div>
+                <label htmlFor="email" className="text-sm text-gray-400">
+                  Username
+                </label>
+                <div className="relative">
+                  <Input
+                    type="text"
+                    placeholder="Enter your username"
+                    className="mt-1 h-10 ps-12 text-sm"
+                    {...register('username')}
+                  />
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    <User className="w-5" />
+                  </span>
+                </div>
+                {errors.username && (
+                  <p className="text-sm mt-1 text-red-500">
+                    {errors.username.message}
+                  </p>
+                )}
+              </div>
               {/* email field */}
               <div>
                 <label htmlFor="email" className="text-sm text-gray-400">
-                  Username or Email
+                  Email
                 </label>
                 <div className="relative">
                   <Input
@@ -126,7 +169,6 @@ const Register = () => {
                   </p>
                 )}
               </div>
-
               {/* password field */}
               <div>
                 <label htmlFor="password" className="text-sm text-gray-400">
@@ -162,7 +204,6 @@ const Register = () => {
                   </p>
                 )}
               </div>
-
               {/* confirm password */}
               <div>
                 <label
@@ -205,7 +246,46 @@ const Register = () => {
                   </p>
                 )}
               </div>
-
+              {/* Role Choosing */}
+              <div className="flex items-center mb-4">
+                <input
+                  id="role-student"
+                  type="radio"
+              
+                  value="student"
+                  {...register("role")}
+                  className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                  checked
+                />
+                <label
+                  htmlFor="role-student"
+                  className="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300"
+                >
+                  Student
+                </label>
+              </div>{' '}
+              <div className="flex items-center mb-4">
+                <input
+                  id="instructor"
+                  type="radio"
+                  required
+                  {...register("role")}
+              
+                  value="instructor"
+                  className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                />
+                <label
+                  htmlFor="instructor"
+                  className="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300"
+                >
+                  Instructor
+                </label>
+              </div>
+              {errors.role && (
+                <p className="text-sm mt-1 text-red-500">
+                  {errors.role.message}
+                </p>
+              )}
               <Button
                 type="submit"
                 className="w-full h-10 mt-4 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white"
