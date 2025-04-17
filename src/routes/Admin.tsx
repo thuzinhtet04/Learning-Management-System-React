@@ -11,6 +11,9 @@ import {
 
 import Dashboard from '@/pages/Dashboard/Dashboard';
 import CourseDetailPage from '@/pages/course/CourseDetailPage';
+import { CoursePageTesting, Dashboard, Login, MainLayout, Register } from './elements';
+import Loader from '@/components/Loading';
+import CourseDetailPage from '@/pages/StudentCourseDetails/CourseDetailPage';
 
 export default function Admin() {
   return useRoutes([
@@ -29,6 +32,11 @@ export default function Admin() {
         {
           path: 'courses',
           element: <AllCourses />,
+        },
+        {
+          path : 'coursedetails/:courseId',
+          element : <CourseDetailPage/>
+
         },
         {
           path: 'courses/new',

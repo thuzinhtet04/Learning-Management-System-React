@@ -10,6 +10,7 @@ import {
 
 import { memo } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useNavigate } from 'react-router-dom';
 import DiamondIcon from './diamond-icon';
 import { enrollment } from './types';
 import { courseDummyCategory } from '@/constant/dummy-data';
@@ -27,9 +28,15 @@ const StudentCourseCard = memo(
   ({ enrollments }: { enrollments: enrollment[] }) => {
     const courseData = enrollments.map((data) => data.course!);
 
+    const navigate = useNavigate()
+    
     return (
       <div className="grid md:grid-cols-3 gap-4">
-        {courseData.map((item) => (
+        {courseData.map((item) => {
+           const handleContinueClick = () => {
+            navigate(`/coursedetails/${item.id}`)
+          }
+        return (
           <Card
             key={item.id}
             className={`${
@@ -76,17 +83,21 @@ const StudentCourseCard = memo(
                 <h1>{item.instructor.users?.username}</h1>
               </div>
 
-              <Button
+                <Button
+               
                 className="bg-orange-600 text-md rounded-lg hover:bg-orange-700"
+                onClick={handleContinueClick}
+                
                 onClick={() => {
                   console.log('course >>>', item);
                 }}
               >
                 Continue
-              </Button>
+                </Button>
             </CardFooter>
           </Card>
-        ))}
+        )
+      })}
       </div>
     );
   }
