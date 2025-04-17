@@ -8,13 +8,16 @@ import { Search } from 'lucide-react';
 import { useSearchContext } from '@/provider/search-provider';
 // import { Search } from 'lucide-react';
 const StudentNav = () => {
-  const { authUser } = useAuthStore();
-
+  const { authUser, accessToken } = useAuthStore();
+  
   const { pathname } = useLocation();
 
   // console.log('pathname >>>', pathname);
   const { setSearchText } = useSearchContext();
   // console.log('searchText >>>', searchText);
+
+
+  console.log(accessToken);
 
   return (
     <header className="h-20 w-full  flex justify-between items-center px-2  border-slate-600">

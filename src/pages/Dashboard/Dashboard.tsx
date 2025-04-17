@@ -4,25 +4,32 @@ import InstructorDashboard from '../InstructorDashboard/InstructorDashboard';
 import AdminDashboard from '../AdminDashboard/AdminDashboard';
 import { useAuthStore } from '@/store/authStore';
 
-type UserRole = 'student' | 'admin' | 'instructor';
+type UserRole = 'STUDENT' | 'ADMIN' | 'INSTRUCTOR';
 interface DashboardProps {
   userRole?: UserRole;
 }
 
 const Dashboard: React.FC<DashboardProps> = () => {
-  const { userRole } = useAuthStore();
-  if (!userRole) {
+  const { authUser } = useAuthStore();
+
+  console.log(authUser?.status === 'SUCCESS');
+
+  if (authUser == null) {
+    return;
+  }
+
+  if (authUser.status !== 'SUCCESS') {
     return <h1 className="text-center mt-10 text-red-500">Please log in</h1>;
   }
 
   const dashboardComponents: Record<UserRole, React.ReactNode> = {
-    student: <StudentDashboard />,
-    instructor: <InstructorDashboard />,
-    admin: <AdminDashboard />,
+    STUDENT: <StudentDashboard />,
+    INSTRUCTOR: <InstructorDashboard />,
+    ADMIN: <AdminDashboard />,
   };
 
   return (
-    dashboardComponents[userRole] ?? (
+    dashboardComponents[authUser.data.roleName as UserRole] ?? (
       <h1 className="text-center mt-10 text-red-500">Invalid Role</h1>
     )
   );

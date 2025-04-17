@@ -11,11 +11,14 @@ import {
 
 import Dashboard from '@/pages/Dashboard/Dashboard';
 import CourseDetailPage from '@/pages/course/CourseDetailPage';
+import { useAuthStore } from '@/store/authStore';
 import { CoursePageTesting, Dashboard, Login, MainLayout, Register } from './elements';
 import Loader from '@/components/Loading';
 import CourseDetailPage from '@/pages/StudentCourseDetails/CourseDetailPage';
 
 export default function Admin() {
+  const { authUser } = useAuthStore();
+
   return useRoutes([
     {
       path: '/',
@@ -54,13 +57,14 @@ export default function Admin() {
           path: 'coursedetails',
           element: <CourseDetailPage />,
         },
+
         {
           path: 'login',
-          element: <Login />,
+          element: authUser ? <Navigate to="/" /> : <Login />,
         },
         {
           path: 'register',
-          element: <Register />,
+          element: authUser ? <Navigate to="/" /> : <Register />,
         },
       ],
     },
