@@ -44,15 +44,15 @@ export function NavUser() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              size="sm"
-              className={`h-16 outline-none border-gray-600 rounded-xl border py-8 mb-2 ${
+              size="lg"
+              className={`${
                 theme == 'light'
                   ? 'hover:bg-gray-600 data-[state=open]:bg-gray-300'
                   : 'data-[state=open]:bg-sidebar-accent'
               } data-[state=open]:text-sidebar-accent-foreground`}
             >
               <Avatar
-                className={`h-14 w-14 rounded-full outline-none ${
+                className={`h-8 w-8 rounded-lg" ${
                   theme == 'light' ? 'text-black' : 'text-white'
                 }`}
               >
