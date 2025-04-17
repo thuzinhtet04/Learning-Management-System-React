@@ -5,10 +5,10 @@ import { courseDummyCategory } from '@/constant/dummy-data';
 
 interface Props {
   categoryId: number;
-  onCategoryId: (id: number) => void;
+  setCategoryId: (id: number) => void;
 }
 
-export default function StudentHeader({ categoryId, onCategoryId }: Props) {
+export default function StudentHeader({ categoryId, setCategoryId }: Props) {
   return (
     <header className="h-20 w-full flex justify-between items-center space-x-2 ">
       <div className="hidden md:block md:text-xl font-bold mb-2">
@@ -18,7 +18,7 @@ export default function StudentHeader({ categoryId, onCategoryId }: Props) {
         <Button
           variant={`${categoryId === 0 ? 'default' : 'outline'}`}
           onClick={() => {
-            onCategoryId(0);
+            setCategoryId(0);
           }}
           className="mb-2"
         >
@@ -34,7 +34,7 @@ export default function StudentHeader({ categoryId, onCategoryId }: Props) {
                 // variant={'default'}
                 key={category.id}
                 onClick={() => {
-                  onCategoryId(category.id);
+                  setCategoryId(category.id);
                 }}
               >
                 {category.name}

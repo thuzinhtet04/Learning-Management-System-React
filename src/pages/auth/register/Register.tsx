@@ -21,6 +21,8 @@ import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from '@radix-ui/react-label';
 import { RadioGroup } from '@radix-ui/react-dropdown-menu';
+import { API_BASE_URL } from '@/config/serverApiConfig';
+import { RegisterUserFn } from '@/features/authentication/service/authApi';
 
 const registerSchema = z
   .object({
@@ -40,8 +42,8 @@ const registerSchema = z
     path: ['confirmPassword'],
   });
 
-type FormData = z.infer<typeof registerSchema>;
-
+export   type FormData = z.infer<typeof registerSchema>;
+ 
 const Register = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
@@ -57,30 +59,8 @@ const Register = () => {
   });
 
   const { mutate: registerUser, isPending } = useMutation({
-    mutationFn: async (data: FormData) => {
-      // Replace this with your actual registration API call
-      const response = await fetch(
-        import.meta.env.VITE_BACKEND_SERVER + '/api/v1/auth/register',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: data.username,
-            email: data.email,
-            password: data.password,
-            password_confirmation: data.confirmPassword,
-            role: data.role,
-          }),
-        }
-      );
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Registration failed');
-      }
-      return response.json();
-    },
+
+    mutationFn: RegisterUserFn,
     onSuccess: () => {
       toast.success('Registration successful! Please login.');
       navigate('/login');
@@ -91,8 +71,8 @@ const Register = () => {
   });
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    // registerUser(data);
     console.log(data)
+    registerUser(data);
   };
 
   return (

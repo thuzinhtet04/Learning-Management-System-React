@@ -9,7 +9,7 @@ const API = axios.create({
 
 // Add access token to every request
 API.interceptors.request.use((config) => {
-  const token = useAuthStore.getState().accessToken;
+  const token = useAuthStore.getState().token;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -27,16 +27,14 @@ API.interceptors.response.use(
       }
 
       try {
-        const res = await axios.post(API_BASE_URL + '/auth/refresh', {
-          refreshToken: refreshToken,
-        });
+        const res = await axios.post(API_BASE_URL + '/auth/refresh');
 
-        const { accessToken } = res.data;
+        const { token } = res.data;
 
-        await login({ accessToken, refreshToken });
+        await login({ token, refreshToken });
 
         // Retry the failed request
-        error.config.headers.Authorization = `Bearer ${accessToken}`;
+        error.config.headers.Authorization = `Bearer ${token}`;
         return axios(error.config);
       } catch (error) {
         logout();

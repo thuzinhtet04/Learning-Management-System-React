@@ -15,6 +15,7 @@ import { loginUserFn } from '../service/authApi';
 const LoginForm = () => {
   const { theme } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const loginSchema = z.object({
     email: z.string().email(),
@@ -36,7 +37,7 @@ const LoginForm = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const navigate = useNavigate();
+
 
   const { mutate: login, isPending } = useMutation({
     mutationFn: loginUserFn,
@@ -54,6 +55,7 @@ const LoginForm = () => {
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     login(data);
+ 
   };
   return (
     <div className="flex justify-center  md:mt-0 mt-10">

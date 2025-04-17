@@ -43,13 +43,14 @@ type navMainProps = {
   }[];
 };
 
+
 export function NavMain({ items, buttons }: navMainProps) {
   const { setRole } = useAuthStore();
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu className="space-y-5">
-        {items.map((item) => (
+        {items.map((item ,index) => (
           <Collapsible
             key={item.title}
             asChild
@@ -107,9 +108,10 @@ export function NavMain({ items, buttons }: navMainProps) {
           </Collapsible>
         ))}
         {/* about and contact us */}
-        {buttons.map((button) => (
+        {buttons.map((button,index) => (
           <SidebarMenuButton
             asChild
+            key={index}
             tooltip={button.title}
             size={'lg'}
             className="[&>svg]:size-6 group-data-[collapsible=icon]:[&>svg]:ml-1"

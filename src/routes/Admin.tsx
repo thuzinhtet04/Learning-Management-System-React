@@ -1,16 +1,15 @@
 import { Navigate, useRoutes } from 'react-router-dom';
 import {
-  Login,
-  MainLayout,
-  Register,
+
+
+ 
   AllCourses,
   CourseDetails,
   InstructorDetails,
   NewCourse,
 } from './elements';
 
-import Dashboard from '@/pages/Dashboard/Dashboard';
-import CourseDetailPage from '@/pages/course/CourseDetailPage';
+// import CourseDetailPage from '@/pages/course/CourseDetailPage';
 import { useAuthStore } from '@/store/authStore';
 import { CoursePageTesting, Dashboard, Login, MainLayout, Register } from './elements';
 import Loader from '@/components/Loading';
@@ -21,14 +20,19 @@ export default function Admin() {
 
   return useRoutes([
     {
-      path: '/',
-      element: <Navigate to="/" replace />,
+      path: '/login',
+      element: authUser ? <Navigate to="/" /> : <Login />,
+    },
+    {
+      path: '/register',
+      element: authUser ? <Navigate to="/" /> : <Register />,
     },
     {
       path: '/',
       element: <MainLayout />,
       children: [
         {
+          path : "dashboard" ,
           element: <Dashboard />,
           index: true,
         },
@@ -58,14 +62,7 @@ export default function Admin() {
           element: <CourseDetailPage />,
         },
 
-        {
-          path: 'login',
-          element: authUser ? <Navigate to="/" /> : <Login />,
-        },
-        {
-          path: 'register',
-          element: authUser ? <Navigate to="/" /> : <Register />,
-        },
+
       ],
     },
     {

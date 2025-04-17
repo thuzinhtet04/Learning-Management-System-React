@@ -1,10 +1,10 @@
 import { Navigate, useRoutes } from 'react-router-dom';
-import { Login } from './elements';
+import { Login, Register } from './elements';
 
 export default function UnAuth() {
   return useRoutes([
     {
-      path: '',
+      path: '/',
       element: <Navigate to="/login" replace />,
     },
     {
@@ -13,8 +13,13 @@ export default function UnAuth() {
     },
 
     {
-      path: 'login',
+      path: '/login',
       element: <Login />,
+    },
+    
+    {
+      path: '/register',
+      element: <Register />,
     },
   ]);
 }

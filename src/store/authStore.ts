@@ -4,17 +4,14 @@ import { redirect } from 'react-router-dom';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-type UserRole = 'STUDENT' | 'INSTRUCTOR' | 'ADMIN' | null;
+type UserRole = 'student' | 'instructor' | 'admin' | null;
 interface AuthState {
   authUser: IAuthUser | null;
   userRole: UserRole;
   setRole: (role: Exclude<UserRole, null>) => void;
-  accessToken: string | null;
+  token: string | null;
   refreshToken: string | null;
-  login: (tokens: {
-    accessToken: string;
-    refreshToken: string;
-  }) => Promise<void>;
+  login: (tokens: { token: string; refreshToken: string }) => Promise<void>;
   logout: () => void;
   fetchUser: () => Promise<void>;
 }
@@ -24,27 +21,28 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       authUser: null,
       userRole: null,
-      accessToken: null,
+      token: null,
       refreshToken: null,
 
-      login: async ({ accessToken, refreshToken }) => {
-        set({ accessToken, refreshToken });
+      login: async ({ token, refreshToken }) => {
+        console.log(token , refreshToken)
+        set((state) => ({ token: token, refreshToken: refreshToken }));
 
         // Fetch user data
-        await get().fetchUser();
+        get().fetchUser();
       },
 
       logout: () => {
-        set({ authUser: null, accessToken: null, refreshToken: null });
+        set({ authUser: null, token: null, refreshToken: null });
         redirect('/dashboard');
       },
 
       fetchUser: async () => {
         try {
           const res = await API.get('/auth/me');
-          console.log(res);
-          set({ authUser: res.data });
-          set({ userRole: res.data.data.roleName });
+          
+        
+          set({authUser:  res.data , userRole: res.data.data.roleName });
         } catch (error) {
           console.error(error);
           get().logout();

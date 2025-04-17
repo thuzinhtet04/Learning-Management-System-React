@@ -30,8 +30,8 @@ export type Role = 'admin' | 'instructor' | 'student';
 export interface categories {
   id: number;
   name: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface courses {
