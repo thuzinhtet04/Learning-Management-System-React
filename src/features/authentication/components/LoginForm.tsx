@@ -8,9 +8,8 @@ import Footer from '@/Layouts/Footer';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { EyeIcon, EyeOff, LockKeyhole, Mail, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
+import {toast} from "sonner";
 import { useMutation } from '@tanstack/react-query';
-
 import { loginUserFn } from '../service/authApi';
 
 const LoginForm = () => {

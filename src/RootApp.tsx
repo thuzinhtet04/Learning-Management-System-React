@@ -8,6 +8,7 @@ export default function RoutApp() {
   return (
     <QueryProviders>
       <Toaster richColors />
+
       <Routes />
     </QueryProviders>
   );
