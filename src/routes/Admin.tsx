@@ -32,7 +32,7 @@ export default function Admin() {
       element: <MainLayout />,
       children: [
         {
-          path : "dashboard" ,
+     
           element: <Dashboard />,
           index: true,
         },

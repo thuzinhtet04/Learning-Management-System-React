@@ -1,18 +1,17 @@
 export interface IUser {
   id: string;
-  name: string;
+  
   email: string;
   roleName: string;
   username: string;
-  createdAt: unknown;
-  updatedAt: unknown;
-  userId: string;
-  available: boolean;
+  created_at: unknown;
+  updated_at: unknown;
+ is_available: boolean;
 }
 
 export interface IAuthUser {
   data: IUser;
-  status: string;
+  message: string;
 }
 
 export interface GenericResponse {

@@ -8,7 +8,7 @@ import { Search } from 'lucide-react';
 import { useSearchContext } from '@/provider/search-provider';
 // import { Search } from 'lucide-react';
 const StudentNav = () => {
-  const { authUser, accessToken } = useAuthStore();
+  const { authUser, token } = useAuthStore();
   
   const { pathname } = useLocation();
 
@@ -17,7 +17,7 @@ const StudentNav = () => {
   // console.log('searchText >>>', searchText);
 
 
-  console.log(accessToken);
+  console.log(token);
 
   return (
     <header className="h-20 w-full  flex justify-between items-center px-2  border-slate-600">
@@ -25,9 +25,9 @@ const StudentNav = () => {
         <SidebarTrigger variant={'outline'} />
 
         <Separator orientation="vertical" className="mr-2 h-4" />
-        <Link to="/" className="text-xl font-bold">
-          {authUser ? authUser.name : 'No User Yet'}
-        </Link>
+    
+          {authUser ?   <Link to="/" className="text-xl font-bold ">{authUser.data.username} </Link>  : <p> You are in Guest Mode,please <a href='/login'>SignIn</a>  here </p>  }
+    
       </div>
 
       <div className="flex flex-row gap-2 justify-between items-center ">

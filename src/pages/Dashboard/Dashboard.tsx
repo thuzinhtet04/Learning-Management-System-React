@@ -36,6 +36,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
     dashboardComponents[authUser.data.roleName as UserRole] ?? (
       <h1 className="text-center mt-10 text-red-500">Invalid Role</h1>
     )
+
   );
 };
 

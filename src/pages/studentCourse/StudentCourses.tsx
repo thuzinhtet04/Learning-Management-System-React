@@ -1,65 +1,18 @@
 import { dummyStudentUserData } from '@/constant/dummy-data';
 import StudentCourseCard from './StudentCourseCard';
+import { useQuery } from '@tanstack/react-query';
 
 interface Props {
   categoryId: number;
 }
 
 const StudentCourses = ({ categoryId }: Props) => {
-  /*
-  const courseData: TUserCourse[] = [
-    {
-      id: 1,
-      category: ' Computer Science',
-      title: 'Introduction to Computer Science',
-      progress: 60,
-      saved: true,
-      instructor: 'Ko Lin',
-    },
-    {
-      id: 2,
-      category: ' Computer Science',
-      title: 'Introduction to Computer Science',
-      progress: 60,
-      saved: true,
-      instructor: 'Ko Lin',
-    },
-    {
-      id: 3,
-      category: ' Computer Science',
-      title: 'Introduction to Computer Science',
-      progress: 60,
-      saved: true,
-      instructor: 'Ko Lin',
-    },
-    {
-      id: 4,
-      category: ' Computer Science',
-      title: 'Introduction to Computer Science',
-      progress: 60,
-      saved: true,
-      instructor: 'Ko Lin',
-    },
-    {
-      id: 5,
-      category: ' Computer Science',
-      title: 'Introduction to Computer Science',
-      progress: 60,
-      saved: true,
-      instructor: 'Ko Lin',
-    },
-    {
-      id: 6,
-      category: ' Computer Science',
-      title: 'Introduction to Computer Science',
-      progress: 60,
-      saved: true,
-      instructor: 'Ko Lin',
-    },
-  ];
-  */
-
-  const customEnrollments = dummyStudentUserData.enrollments?.filter(
+  const {data  :  enrolledCourses , isLoading , isError} = useQuery({
+queryFn : fetchEnrolledCourses,
+queryKey : ["courses" , "enrolled"]
+  })
+ 
+  const customEnrollments = enrolledCourses?.filter(
     (data) => data.course?.categoryId === categoryId
   );
 

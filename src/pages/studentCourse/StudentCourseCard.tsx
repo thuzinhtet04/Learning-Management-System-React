@@ -25,8 +25,8 @@ const colors = [
 ];
 
 const StudentCourseCard = memo(
-  ({ enrollments }: { enrollments: enrollment[] }) => {
-    const courseData = enrollments.map((data) => data.course!);
+  ({ enrollments }: { enrollments: enrollment[] | undifined }) => {
+    const courseData = enrollments?.map((data) => data.course!);
 
     const navigate = useNavigate()
     
