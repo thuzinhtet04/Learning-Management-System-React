@@ -7,6 +7,56 @@ export type TUserCourse = {
   instructor: string;
 };
 
+export interface CategoryInterface {
+  id: number;
+  name: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface InstructorUser {
+  id: number;
+  username: string;
+  email?: string;
+  phone?: string | null;
+  dob?: string | null;
+  address?: string | null;
+  profile_photo: string | null;
+  role_id?: number;
+  is_available?: number;
+  created_at?: string;
+  updated_at?: string;
+  laravel_through_key: number;
+}
+
+export type CourseResponse = {
+  data: Course[];
+  current_page: number;
+  last_page: number;
+  next_page_url: string | null;
+  prev_page_url: string | null;
+  per_page: number;
+  total: number;
+};
+export interface Course {
+  id: number;
+  course_name: string;
+  thumbnail: string;
+  is_available: number;
+  type: 'free' | 'paid';
+  level: 'beginner' | 'intermediate' | 'advanced';
+  description: string | null;
+  duration: string;
+  original_price: string;
+  current_price: string;
+  category_id: number;
+  instructor_id: number;
+  created_at: string;
+  updated_at: string;
+  instructor_user: InstructorUser;
+  category: CategoryInterface;
+}
+
 export interface users {
   id: number;
   name: string;
@@ -32,26 +82,6 @@ export interface categories {
   name: string;
   createdAt?: string;
   updatedAt?: string;
-}
-
-export interface courses {
-  id: number;
-  courseName: string;
-  thumbnail: string;
-  type: string;
-  level: level;
-  description: string;
-  duration: number;
-  originalPrice: number;
-  currentPrice: number;
-  categoryName: string;
-  createdAt: string;
-  updatedAt: string;
-  available: boolean;
-  instructorId: number;
-  categoryId: number;
-  socialLinkId: number;
-  studentCount: number;
 }
 
 export interface courseDetails {
@@ -83,6 +113,36 @@ export interface enrollment {
   courseId: number;
   enrollmentDate: string;
 }
+export interface enrollmentWithCourse {
+  id: number;
+  course_name: string;
+  thumbnail: string;
+  is_available: number;
+  type: 'free' | 'paid';
+  level: 'beginner' | 'intermediate' | 'advanced';
+  description: string | null;
+  duration: string;
+  original_price: string;
+  current_price: string;
+  category_id: number;
+  instructor_id: number;
+  created_at: string;
+  updated_at: string;
+  pivot: {
+    user_id: number;
+    course_id: number;
+    enrollment_date: string;
+    is_completed: number;
+    completed_date: string | null;
+  };
+  instructor_user: InstructorUser;
+}
+
+export function isEnrollmentArray(
+  arr: enrollmentWithCourse[] | CourseResponse
+): arr is enrollmentWithCourse[] {
+  return arr?.length > 0 && 'pivot' in arr[0];
+}
 
 export type level = 'beginner' | 'intermediate' | 'advanced';
 
@@ -107,5 +167,5 @@ export interface socialLinks {
   email: string;
 
   courseId?: number;
-  course?: courses;
+  course?: Course;
 }

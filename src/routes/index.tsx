@@ -1,10 +1,13 @@
+import { useAuthStore } from '@/store/authStore';
 import Admin from './Admin';
 import UnAuth from './UnAuth';
 
 export default function Routes() {
-  const isAdmin: boolean = true;
+  const { authUser } = useAuthStore();
+  const isAuth = authUser?.data && authUser.data.username
 
-  if (isAdmin) {
+
+  if (isAuth) {
     return <Admin />;
   } else {
     return <UnAuth />;

@@ -1,13 +1,7 @@
+import { CategoryInterface } from "@/pages/studentCourse/types";
 import API from "./api"
 
-interface CategoryInterface {
 
-    id: number;
-    name: string;
-    created_at: string;
-    updated_at: string;
-
-}
 
  export const fetchCategories = async () : Promise<CategoryInterface[]> => {
   try {
@@ -20,4 +14,26 @@ interface CategoryInterface {
     
   }
 
+}
+
+export const fetchEnrollCourses = async () => {
+  try {
+    const res = await API.get('/courses/my-courses');
+    const data = await res.data;
+    console.log(data)
+    return data.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+export const fetchCourses = async (param : string) => {
+  try {
+    const res = await API.get('/courses?' + param);
+    const data = await res.data;
+    return data.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }

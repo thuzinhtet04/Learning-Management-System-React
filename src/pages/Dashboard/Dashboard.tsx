@@ -4,6 +4,7 @@ import InstructorDashboard from '../InstructorDashboard/InstructorDashboard';
 import AdminDashboard from '../AdminDashboard/AdminDashboard';
 import { useAuthStore } from '@/store/authStore';
 import { Navigate } from 'react-router-dom';
+import NoAuthDashboard from '../NoAuthDashboard/NoAuthDashboard';
 
 type UserRole = 'student' | 'admin' | 'instructor';
 interface DashboardProps {
@@ -14,6 +15,8 @@ const dashboardComponents: Record<UserRole, React.ReactNode> = {
   student: <StudentDashboard />,
   instructor : <InstructorDashboard />,
   admin: <AdminDashboard />,
+
+
 };
 
 const Dashboard: React.FC<DashboardProps> = () => {
@@ -22,22 +25,17 @@ const Dashboard: React.FC<DashboardProps> = () => {
 
 
 
-  if (authUser == null) {
-    <Navigate to="/login" /> ;
-  }
+  
 
-  if (!authUser?.data) {
-    return <h1 className="text-center text-4xl mt-10 text-red-500">Please log in</h1>;
-  }
+
 
 
 
   return (
-    dashboardComponents[authUser.data.roleName as UserRole] ?? (
-      <h1 className="text-center mt-10 text-red-500">Invalid Role</h1>
+    dashboardComponents[authUser?.data.roleName as UserRole] ?? <NoAuthDashboard />
     )
 
-  );
+
 };
 
 export default Dashboard;

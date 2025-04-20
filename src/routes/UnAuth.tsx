@@ -1,17 +1,13 @@
 import { Navigate, useRoutes } from 'react-router-dom';
-import { Login, Register } from './elements';
+import { Login, Register , Dashboard } from './elements';
+
 
 export default function UnAuth() {
   return useRoutes([
     {
       path: '/',
-      element: <Navigate to="/login" replace />,
+      element: < Dashboard />,
     },
-    {
-      path: '*',
-      element: <Navigate to="/login" replace />,
-    },
-
     {
       path: '/login',
       element: <Login />,
