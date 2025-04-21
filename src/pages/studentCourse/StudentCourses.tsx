@@ -2,13 +2,14 @@ import { dummyStudentUserData } from '@/constant/dummy-data';
 import StudentCourseCard from './StudentCourseCard';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEnrollCourses } from '@/features/authentication/service/services';
+import { useSearchParams } from 'react-router-dom';
 
 interface Props {
   categoryId: number;
 }
 
 const StudentCourses = ({ categoryId }: Props) => {
-  
+ 
   const {data  :  enrolledCourses , isLoading , isError} = useQuery({
 queryFn : fetchEnrollCourses,
 queryKey : ["courses" , "enrolled"]

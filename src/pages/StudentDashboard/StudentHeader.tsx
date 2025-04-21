@@ -7,7 +7,10 @@ import { useAuthStore } from '@/store/authStore';
 import { useCategories } from '@/store/useCategories';
 import { useQuery } from '@tanstack/react-query';
 import { CategoryInterface } from '../studentCourse/types';
-import { useEffect } from 'react';
+import { FormEvent, useEffect } from 'react';
+import SearchInput from '@/components/SearchInput';
+import API from '@/features/authentication/service/api';
+import { useSearchParams } from 'react-router-dom';
 
 interface Props {
   categoryId: number;
@@ -24,19 +27,25 @@ export default function StudentHeader({ categoryId, setCategoryId }: Props) {
       errorMessage: 'Failed to fetch Categories',
     },
   });
+  const [searchParams   , setSearchParams ] = useSearchParams()
   const { authUser } = useAuthStore();
   useEffect(() => {
     if (data) {
       setCategories(data);
     }
   }, [data]);
+  const handleSearch = async (e : FormEvent<HTMLFormElement> , search: string) => {
+    e.preventDefault()
+    setSearchParams({ search: search});
+  };
 
   return (
     <header className="h-20 w-full flex justify-between items-center space-x-2 ">
-      <div className="hidden md:block md:text-xl font-bold mb-2">
+      <div className="hidden md:block md:text-2xl font-bold mb-2 ">
         {authUser?.data.username ? 'My Courses' : 'Explore Courses'}
       </div>
-      <div className="flex items-center gap-1 ">
+      <div className="flex items-stretch  gap-1 ">
+        <SearchInput onSubmit={handleSearch} />
         <Button
           variant={`${categoryId === 0 ? 'default' : 'outline'}`}
           onClick={() => {
@@ -46,6 +55,7 @@ export default function StudentHeader({ categoryId, setCategoryId }: Props) {
         >
           All Courses
         </Button>
+
         <ScrollArea className="max-w-[180px] md:max-w-md whitespace-nowrap rounded-md pb-1">
           <div className="flex flex-row gap-1  justify-between items-center overflow-x-auto w-auto p-1 pb-2">
             {isLoading && arr.map((index) => <LoaderButton key={index} />)}

@@ -5,20 +5,23 @@ import StudentCourseCard from './StudentCourseCard';
 
 import DiamondIcon from './diamond-icon';
 import CoursesLoader from '../Courses/CoursesLoader';
+import { useSearchParams } from 'react-router-dom';
 
 interface Props {
   categoryId: number;
 }
 const IndexCourses = ({ categoryId }: Props) => {
+  const [searchParams , setSearchParams] = useSearchParams();
+ console.log("fresh",searchParams.toString())
 
-    console.log(categoryId)
+
   const {
     data: courses,
     isLoading,
     isError,
   } = useQuery({
-    queryFn: () => fetchCourses(`category=${categoryId===0 ? "" : categoryId}`),
-    queryKey: ['courses' , `category=${categoryId}`],
+    queryFn: () => fetchCourses(`${ categoryId!==0 ? ( "category="+categoryId) : "" }${searchParams.toString() ? searchParams.toString()+"&" : "&"  }`),
+    queryKey: ['courses' , `category=${categoryId}&search=${searchParams.toString()}`],
   });
   if (isLoading) return <CoursesLoader count={8} />;
   if (courses)
