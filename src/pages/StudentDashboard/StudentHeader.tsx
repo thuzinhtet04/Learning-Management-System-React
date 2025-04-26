@@ -27,16 +27,19 @@ export default function StudentHeader({ categoryId, setCategoryId }: Props) {
       errorMessage: 'Failed to fetch Categories',
     },
   });
-  const [searchParams   , setSearchParams ] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams();
   const { authUser } = useAuthStore();
   useEffect(() => {
     if (data) {
       setCategories(data);
     }
   }, [data]);
-  const handleSearch = async (e : FormEvent<HTMLFormElement> , search: string) => {
-    e.preventDefault()
-    setSearchParams({ search: search});
+  const handleSearch = async (
+    e: FormEvent<HTMLFormElement>,
+    search: string
+  ) => {
+    e.preventDefault();
+    setSearchParams({ search: search });
   };
 
   return (

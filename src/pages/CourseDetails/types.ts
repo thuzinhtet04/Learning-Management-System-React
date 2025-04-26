@@ -1,11 +1,9 @@
 import { courseDetails, users } from '../studentCourse/types';
 
 export type CourseDetailsResponse = {
-  status: string;
   data: courseDetails;
-  error: null;
+  error?: null;
   message: string;
-  details: null;
 };
 
 export type UserResponse = {

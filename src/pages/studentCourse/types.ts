@@ -27,6 +27,7 @@ export interface InstructorUser {
   created_at?: string;
   updated_at?: string;
   laravel_through_key: number;
+
 }
 
 export type CourseResponse = {
@@ -92,19 +93,21 @@ export interface courseDetails {
   level: level;
   description: string;
   duration: number;
-  originalPrice: number;
-  currentPrice: number;
+  original_price: number;
+  current_price: number;
   categoryName: string;
   createdAt: string;
   updatedAt: string;
   available: boolean;
-  instructorId: number;
+  instructorId?: number;
   categoryId: number;
   socialLinkId: number;
   category: categories;
   lessons: lesson[];
   socialLink: socialLinks;
   enrollment: enrollment[];
+  instructor?: InstructorUser;
+  instructorEducation : string;
 }
 
 export interface enrollment {

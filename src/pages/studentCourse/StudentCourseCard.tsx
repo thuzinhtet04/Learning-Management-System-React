@@ -38,7 +38,7 @@ const StudentCourseCard = memo(
     const { getCategoryById} = useCategories();
     console.log(enrollments , "en")
     const handleContinueClick = (id : number) => {
-      navigate(`/coursedetails/${id}`);
+      navigate(`/course-details/${id}`);
     };
     
 
@@ -163,7 +163,7 @@ const StudentCourseCard = memo(
 
                 <Button
                   className="bg-orange-600 text-md rounded-lg hover:bg-orange-700"
-                  onClick={() =>  handleContinueClick(item.id)}
+                  onClick={() =>   navigate(`/courses/${item.id}`)}
 
                 >
                  Enroll 

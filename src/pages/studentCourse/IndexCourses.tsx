@@ -27,8 +27,7 @@ const IndexCourses = ({ categoryId }: Props) => {
   if (courses)
     return (
       <div>
-        {categoryId === 0 && <StudentCourseCard enrollments={courses} />}
-        {categoryId !== 0 &&  <StudentCourseCard enrollments={courses} />}
+        <StudentCourseCard enrollments={courses} />
       </div>
     );
 };

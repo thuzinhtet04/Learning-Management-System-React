@@ -19,6 +19,7 @@ const CourseDetailPage = () => {
 
   return (
     <main>
+      helo this is detail page
       {/* Breadcrumb */}
       <Breadcrumb/>
 

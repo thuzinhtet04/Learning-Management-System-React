@@ -1,11 +1,11 @@
 import { Separator } from '@/components/ui/separator';
 import { Card, CardContent } from '@/components/ui/card';
-import { courseDetails, users } from '../studentCourse/types';
+import { courseDetails, InstructorUser, users } from '../studentCourse/types';
 import { Link } from 'react-router-dom';
 
 type Props = {
   courseData: courseDetails;
-  instructor: users;
+  instructor: InstructorUser;
 };
 
 export default function InstructorInfoCard({ courseData, instructor }: Props) {
@@ -17,8 +17,8 @@ export default function InstructorInfoCard({ courseData, instructor }: Props) {
           <div className="relative h-16 w-16 rounded-full overflow-hidden">
             <Link to={`/instructor/${instructor.id}`}>
               <img
-                src={instructor.profilePhoto}
-                alt={instructor?.name}
+                src={instructor.profile_photo ?? "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?t=st=1745687290~exp=1745690890~hmac=8a900b8b8cee8d963d5f5128578627883c9e4fca9928a3261b1ceb09328bb389&w=740"}
+                alt={instructor?.username}
                 // fill
                 className="object-cover"
               />
@@ -26,9 +26,9 @@ export default function InstructorInfoCard({ courseData, instructor }: Props) {
           </div>
           <div>
             <Link to={`/instructor/${instructor.id}`}>
-              <h3 className="font-medium">{instructor.name}</h3>
+              <h3 className="font-medium">{instructor.username}</h3>
             </Link>
-            <div className="flex gap-2 mt-1">
+            {/* <div className="flex gap-2 mt-1">
               {courseData.socialLink.x && (
                 <a
                   href={courseData.socialLink.x}
@@ -99,12 +99,12 @@ export default function InstructorInfoCard({ courseData, instructor }: Props) {
                   </svg>
                 </a>
               )}
-            </div>
+            </div> */}
           </div>
         </div>
         <Separator />
         <p className="text-sm text-muted-foreground">
-          {instructor.eduBackground}
+          {courseData.instructorEducation}
         </p>
       </CardContent>
     </Card>

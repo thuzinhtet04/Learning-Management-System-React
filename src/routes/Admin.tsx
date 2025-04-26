@@ -1,4 +1,4 @@
-import { Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, NonIndexRouteObject, RouteObject, useRoutes } from 'react-router-dom';
 import {
 
 
@@ -14,19 +14,12 @@ import { useAuthStore } from '@/store/authStore';
 import { CoursePageTesting, Dashboard, Login, MainLayout, Register } from './elements';
 import Loader from '@/components/Loading';
 import CourseDetailPage from '@/pages/StudentCourseDetails/CourseDetailPage';
+import CourseRoute from './Course.route';
 
 export default function Admin() {
   const { authUser } = useAuthStore();
 
   return useRoutes([
-    {
-      path: '/login',
-      element: authUser ? <Navigate to="/" /> : <Login />,
-    },
-    {
-      path: '/register',
-      element: authUser ? <Navigate to="/" /> : <Register />,
-    },
     {
       path: '/',
       element: <MainLayout />,
@@ -41,7 +34,7 @@ export default function Admin() {
           element: <AllCourses />,
         },
         {
-          path : 'coursedetails/:courseId',
+          path : 'course-details/:courseId',
           element : <CourseDetailPage/>
 
         },
@@ -57,10 +50,7 @@ export default function Admin() {
           path: 'instructor/:instructorId',
           element: <InstructorDetails />,
         },
-        {
-          path: 'coursedetails',
-          element: <CourseDetailPage />,
-        },
+
 
 
       ],

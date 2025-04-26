@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { courseDetails, users } from '../studentCourse/types';
+import { courseDetails, InstructorUser, users } from '../studentCourse/types';
 import { API_BASE_URL } from '@/config/serverApiConfig';
 import { CourseDetailsResponse, UserResponse } from './types';
 import { useParams } from 'react-router-dom';
@@ -9,34 +9,29 @@ import InstructorInfoCard from './instructor-info-card';
 import CourseShareCard from './course-share-card';
 import CoursePurchaseCard from './course-purchase-card';
 import CourseHeader from './course-header';
+import API from '@/features/authentication/service/api';
 
 export default function CourseDetails() {
   const { courseId } = useParams();
 
   const [courseData, setCourseData] = useState<courseDetails>();
-  const [instructor, setInstructor] = useState<users>();
+  const [instructor, setInstructor] = useState<InstructorUser>();
+  console.log(courseData)
 
   useEffect(() => {
     async function getCourseById() {
-      const response = await fetch(`${API_BASE_URL}/courses/${courseId}`);
-      const data = (await response.json()) as CourseDetailsResponse;
+      const res = await API.get("/courses/"+courseId);
+      // const response = await fetch(`${API_BASE_URL}/courses/${courseId}`);
+      const data = (await res.data) as CourseDetailsResponse;
+      // console.log(data)
       setCourseData(data.data);
+      setInstructor(data.data?.instructor!)
     }
     getCourseById();
   }, [courseId]);
 
-  useEffect(() => {
-    async function getInstructorById() {
-      if (!courseData?.instructorId) return;
+  console.log(courseData , instructor)
 
-      const response = await fetch(
-        `${API_BASE_URL}/users/${courseData?.instructorId}`
-      );
-      const data = (await response.json()) as UserResponse;
-      setInstructor(data.data);
-    }
-    getInstructorById();
-  }, [courseData?.instructorId]);
 
   if (!courseData || !instructor) return null;
 
@@ -67,7 +62,7 @@ export default function CourseDetails() {
             />
 
             {/* Share Card */}
-            <CourseShareCard />
+            {/* <CourseShareCard /> */}
           </div>
         </div>
       </div>
