@@ -9,7 +9,7 @@ type Props = {
   lessons: lesson[];
 };
 
-export default function CourseTabs({ courseData, lessons }: Props) {
+export default function cCourseTabs({ courseData, lessons }: Props) {
   return (
     <Tabs defaultValue="overview" className="w-full">
       <TabsList className="grid grid-cols-2 mb-8">

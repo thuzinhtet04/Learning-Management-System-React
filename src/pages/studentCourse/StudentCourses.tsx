@@ -9,12 +9,24 @@ interface Props {
 }
 
 const StudentCourses = ({ categoryId }: Props) => {
- 
-  const {data  :  enrolledCourses , isLoading , isError} = useQuery({
-queryFn : fetchEnrollCourses,
-queryKey : ["courses" , "enrolled"]
-  })
- 
+  //! need to  fix my-course
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const {
+    data: enrolledCourses,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryFn: () =>
+      fetchEnrollCourses(
+        `${categoryId !== 0 ? 'category=' + categoryId : ''}${
+          searchParams.toString() ? searchParams.toString() + '&' : '&'
+        }`
+      ),
+    queryKey: ['courses', 'enrolled', categoryId, searchParams.toString()],
+  });
+
   // const customEnrollments = enrolledCourses?.filter(
   //   (data) => data.course?.categoryId === categoryId
   // );
@@ -22,12 +34,13 @@ queryKey : ["courses" , "enrolled"]
   // if (!dummyStudentUserData.enrollments)
   //   return <div>enrollments not found</div>;
 
+  console.log(enrolledCourses, "parent")
   return (
     <div>
-      {/* {categoryId === 0 && (
-        <StudentCourseCard enrollments={dummyStudentUserData.enrollments} />
+      {categoryId === 0 && (
+        <StudentCourseCard enrollments={enrolledCourses} />
       )}
-      {categoryId !== 0 && customEnrollments && (
+      {/* {categoryId !== 0  && (
         <StudentCourseCard enrollments={customEnrollments} />
       )} */}
     </div>

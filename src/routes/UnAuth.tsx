@@ -18,7 +18,6 @@ export default function UnAuth() {
       path: '/login',
       element: <Login />,
     },
-
     {
       path: '/register',
       element: <Register />,
@@ -28,16 +27,23 @@ export default function UnAuth() {
       element: <AllCourses />,
     },
     {
-      path: 'course-details/:courseId',
-      element: <CourseDetailPage />,
-    },
-    {
       path: 'courses/new',
       element: <NewCourse />,
     },
     {
       path: 'courses/:courseId',
       element: <CourseDetails />,
+    },
+    {
+      path: 'instructor/:instructorId',
+      element: <InstructorDetails />,
+    },
+    {
+      path: '*',
+      element: <div>
+        <h1>Not found</h1>
+        <a href="/login">back to Login</a>
+      </div>,
     },
   ]);
 }

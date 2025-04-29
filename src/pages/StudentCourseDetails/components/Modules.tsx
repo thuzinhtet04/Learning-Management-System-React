@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp,Clock,Star } from 'lucide-react';
+import { lesson } from '@/pages/studentCourse/types';
 
 interface Module {
   title: string;
@@ -26,7 +27,7 @@ const modules: Module[] = [
   { title: '06. Advanced Speaking Techniques for Adults', duration: '18 min' },
 ];
 
-const Modules = () => {
+const Modules = ({setLessonIndex , lessons} : {setLessonIndex : React.Dispatch<React.SetStateAction<number>> , lessons : lesson[]}) => {
   const [expandedModule, setExpandedModule] = useState<number | null>(null);
 
   const toggleModule = (index: number) => {
@@ -58,7 +59,7 @@ const Modules = () => {
 
     <div className="space-y-2">
       {modules.map((module, index) => (
-        <div key={index} className="rounded-lg border p-4">
+        <div key={index} className="rounded-lg border p-4" onClick={() => setLessonIndex(index)}>
           <div className="flex items-center justify-between">
             <h3 className="font-semibold">{module.title}</h3>
             <span className="text-sm text-muted-foreground">{module.duration}</span>

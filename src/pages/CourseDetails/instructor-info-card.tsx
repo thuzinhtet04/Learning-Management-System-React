@@ -9,13 +9,15 @@ type Props = {
 };
 
 export default function InstructorInfoCard({ courseData, instructor }: Props) {
+
+  console.log(instructor)
   return (
-    <Card>
+    <Card>  
       <CardContent className="p-6 space-y-4">
         <h2 className="text-xl font-semibold">Instructor</h2>
         <div className="flex items-center gap-4">
           <div className="relative h-16 w-16 rounded-full overflow-hidden">
-            <Link to={`/instructor/${instructor.id}`}>
+            <Link to={`/instructor/${instructor.laravel_through_key}`}>
               <img
                 src={instructor.profile_photo ?? "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?t=st=1745687290~exp=1745690890~hmac=8a900b8b8cee8d963d5f5128578627883c9e4fca9928a3261b1ceb09328bb389&w=740"}
                 alt={instructor?.username}
@@ -25,7 +27,7 @@ export default function InstructorInfoCard({ courseData, instructor }: Props) {
             </Link>
           </div>
           <div>
-            <Link to={`/instructor/${instructor.id}`}>
+            <Link to={`/instructor/${instructor.laravel_through_key}`}>
               <h3 className="font-medium">{instructor.username}</h3>
             </Link>
             {/* <div className="flex gap-2 mt-1">
@@ -104,8 +106,7 @@ export default function InstructorInfoCard({ courseData, instructor }: Props) {
         </div>
         <Separator />
         <p className="text-sm text-muted-foreground">
-          {courseData.instructorEducation}
-        </p>
+          {instructor.edu_background}      </p>
       </CardContent>
     </Card>
   );

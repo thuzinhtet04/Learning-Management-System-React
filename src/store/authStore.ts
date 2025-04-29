@@ -25,7 +25,7 @@ export const useAuthStore = create<AuthState>()(
       refreshToken: null,
 
       login: async ({ token, refreshToken }) => {
-        console.log(token , refreshToken)
+        console.log(token, refreshToken);
         set((state) => ({ token: token, refreshToken: refreshToken }));
 
         // Fetch user data
@@ -33,16 +33,20 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
-        set({ authUser: null, token: null, refreshToken: null });
-        redirect('/dashboard');
+        set({
+          authUser: null,
+          token: null,
+          refreshToken: null,
+          userRole: null,
+        });
+        redirect('/login');
       },
 
       fetchUser: async () => {
         try {
           const res = await API.get('/auth/me');
-          
-        
-          set({authUser:  res.data , userRole: res.data.data.roleName });
+
+          set({ authUser: res.data, userRole: res.data.data.roleName });
         } catch (error) {
           console.error(error);
           get().logout();

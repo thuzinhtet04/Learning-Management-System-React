@@ -15,6 +15,7 @@ import { CoursePageTesting, Dashboard, Login, MainLayout, Register } from './ele
 import Loader from '@/components/Loading';
 import CourseDetailPage from '@/pages/StudentCourseDetails/CourseDetailPage';
 import CourseRoute from './Course.route';
+import VideoPlayer from '@/pages/StudentCourseDetails/components/VideoPlayer';
 
 export default function Admin() {
   const { authUser } = useAuthStore();
@@ -35,7 +36,8 @@ export default function Admin() {
         },
         {
           path : 'course-details/:courseId',
-          element : <CourseDetailPage/>
+          element : <CourseDetailPage/>,
+  
 
         },
         {

@@ -1,3 +1,6 @@
+import { NOTINITIALIZED } from 'dns';
+import { boolean } from 'zod';
+
 export type TUserCourse = {
   id: number;
   category: string;
@@ -23,12 +26,25 @@ export interface InstructorUser {
   address?: string | null;
   profile_photo: string | null;
   role_id?: number;
+  edu_background: string;
   is_available?: number;
   created_at?: string;
   updated_at?: string;
   laravel_through_key: number;
-
 }
+
+export type instructor = {
+  id: number;
+  user: users;
+  nrc: string;
+  edu_background: string;
+  courses: Course[];
+};
+
+export type InstructorDetailsResponse = {
+  message: string;
+  data: instructor;
+};
 
 export type CourseResponse = {
   data: Course[];
@@ -43,37 +59,31 @@ export interface Course {
   id: number;
   course_name: string;
   thumbnail: string;
-  is_available: number;
+  is_available?: number;
   type: 'free' | 'paid';
   level: 'beginner' | 'intermediate' | 'advanced';
   description: string | null;
   duration: string;
   original_price: string;
   current_price: string;
-  category_id: number;
-  instructor_id: number;
+  category_id?: number;
+  instructor_id?: number;
+  students: enrollment[];
   created_at: string;
   updated_at: string;
   instructor_user: InstructorUser;
-  category: CategoryInterface;
+  category?: CategoryInterface;
 }
 
 export interface users {
   id: number;
-  name: string;
   username: string;
   email: string;
   phone: string;
   dob: string;
   address: string;
-  profilePhoto: string;
+  profile_photo: string;
   available: boolean;
-  roleName: Role;
-  userId: number;
-  nrc: string;
-  eduBackground: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export type Role = 'admin' | 'instructor' | 'student';
@@ -84,10 +94,16 @@ export interface categories {
   createdAt?: string;
   updatedAt?: string;
 }
-
+export interface lesson         {
+  id: number,
+  title: string,
+  videoUrl:string,
+  lessonDetail:string,
+  is_available: boolean
+} 
 export interface courseDetails {
   id: number;
-  courseName: string;
+  course_name: string;
   thumbnail: string;
   type: string;
   level: level;
@@ -106,16 +122,24 @@ export interface courseDetails {
   lessons: lesson[];
   socialLink: socialLinks;
   enrollment: enrollment[];
-  instructor?: InstructorUser;
-  instructorEducation : string;
+  instructor_user?: InstructorUser;
+  instructorEducation: string;
 }
 
 export interface enrollment {
+  created_at: string;
   id: number;
-  studentId: number;
-  courseId: number;
-  enrollmentDate: string;
+  pivot: {
+    course_id: number;
+    user_id: number;
+    enrollment_date: string;
+    is_completed: boolean;
+    completed_date: null | string;
+  };
+  updated_at: string;
+  user_id: number;
 }
+
 export interface enrollmentWithCourse {
   id: number;
   course_name: string;
@@ -144,7 +168,17 @@ export interface enrollmentWithCourse {
 export function isEnrollmentArray(
   arr: enrollmentWithCourse[] | CourseResponse
 ): arr is enrollmentWithCourse[] {
-  return arr?.length > 0 && 'pivot' in arr[0];
+  return (
+      Array.isArray(arr) &&
+      arr.every(
+        (item) =>
+          typeof item === 'object' &&
+          item !== null &&
+          'course_name' in item &&
+          'pivot' in item
+      )
+    );
+  };
 }
 
 export type level = 'beginner' | 'intermediate' | 'advanced';

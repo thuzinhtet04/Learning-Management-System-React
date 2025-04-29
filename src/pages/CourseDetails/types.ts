@@ -1,4 +1,4 @@
-import { courseDetails, users } from '../studentCourse/types';
+import { courseDetails, instructor, users } from '../studentCourse/types';
 
 export type CourseDetailsResponse = {
   data: courseDetails;
@@ -7,9 +7,6 @@ export type CourseDetailsResponse = {
 };
 
 export type UserResponse = {
-  status: string;
-  data: users;
-  error: null;
-  message: string;
-  details: null;
-};
+  data: instructor;
+  error?: null;
+  message: string;};

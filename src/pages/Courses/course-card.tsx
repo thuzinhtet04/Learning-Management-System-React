@@ -1,39 +1,39 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Link } from 'react-router-dom';
-import { courses } from '../studentCourse/types';
+import { Course } from '../studentCourse/types';
 import { formatPrice } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
 import { getInstructorById } from '@/services';
 
 interface Props {
-  course: courses;
+  course: Course;
 }
 
 export default function CourseCard({ course }: Props) {
-  const {
-    data: instructor,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['instructor', course.instructorId],
-    queryFn: () => getInstructorById(course.instructorId),
-    // staleTime: 60 * 1000,
-  });
+  // const {
+  //   data: instructor,
+  //   isLoading,
+  //   isError,
+  // } = useQuery({
+  //   queryKey: ['instructor', course.instructorId],
+  //   queryFn: () => getInstructorById(course.instructorId),
+  //   // staleTime: 60 * 1000,
+  // });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Something Wrong</div>;
-  if (!instructor) return null;
-
+  // if (isLoading) return <div>Loading...</div>;
+  // if (isError) return <div>Something Wrong</div>;
+  // if (!instructor) return null;
+console.log(course)
   return (
     <div
       className={
-        'bg-[#f7f7f5] border-[#575757] border border-1 dark:text-black rounded-md flex flex-col h-full'
+        ' border-[#575757] p-2 border border-1 bg-teal-400 dark:text-black rounded-md flex flex-col h-full'
       }
     >
       <Link to={`/courses/${course.id}`} className="flex-grow">
         {/* Image section */}
 
-        <div className="relative">
+        <div className="relative  bg-white">
           <img
             src={course.thumbnail}
             alt="lms"
@@ -50,9 +50,9 @@ export default function CourseCard({ course }: Props) {
 
         {/* Content section */}
         <div className="m-2 mt-1 flex flex-col flex-grow">
-          <div className="font-bold text-lg mt-1">{course.courseName}</div>
+          <div className="font-bold text-lg mt-1">{course.course_name}</div>
           <div className="mt-0.5 text-sm text-slate-700">
-            {course.description.slice(0, 50)}...
+            {course.description!.slice(0, 50)}...
           </div>
         </div>
       </Link>
@@ -60,22 +60,23 @@ export default function CourseCard({ course }: Props) {
       {/* Instructor and price */}
       <div className="mt-auto m-2">
         <Link
-          to={`/instructor/${course.instructorId}`}
+          to={`/instructor/${course.instructor_user.laravel_through_key}`}
           className="flex items-center justify-between gap-1"
         >
-          <div className="flex items-center">
+          {course.instructor_id}
+          <div className="flex items-center gap-2">
             <Avatar>
-              <AvatarImage src={instructor?.profilePhoto} alt="@shad-cn" />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage src={course?.instructor_user.profile_photo!} alt="profile_photo" />
+              <AvatarFallback>{course.instructor_user.username.charAt(0)}</AvatarFallback>
             </Avatar>
-            <div className="text-sm font-semibold">{instructor?.name}</div>
+            <div className="text-sm font-semibold">{course?.instructor_user.username}</div>
           </div>
           <div className="flex flex-col items-end">
             <div className="text-[11px] text-slate-700">
-              {course.studentCount} students
+              {course.students.length} students
             </div>
             <div className="text-sm text-slate-700">
-              {formatPrice(course.currentPrice)}
+              {formatPrice(parseInt(course.current_price))}
             </div>
           </div>
         </Link>

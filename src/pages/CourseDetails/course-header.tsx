@@ -14,11 +14,11 @@ export default function CourseHeader({ courseData }: Props) {
       <div className="overflow-hidden mb-2">
         <img
           src={courseData.thumbnail}
-          alt={courseData.courseName}
+          alt={courseData.course_name}
           className=" w-full"
         />
       </div>
-      <h1 className="text-3xl font-bold mb-2">{courseData.courseName}</h1>
+      <h1 className="text-3xl font-bold mb-2">{courseData.course_name}</h1>
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <Badge variant="outline" className="flex items-center gap-1">
           <GraduationCap className="h-3.5 w-3.5" />
