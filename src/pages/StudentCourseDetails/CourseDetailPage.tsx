@@ -1,4 +1,4 @@
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Clock, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Breadcrumb from './components/Breadcrumb';
@@ -26,6 +26,8 @@ const CourseDetailPage = () => {
   const [courseData, setCourseData] = useState<courseDetails>();
   const [instructor, setInstructor] = useState<InstructorUser>();
   const [lessonIndex, setLessonIndex] = useState<number>(0);
+
+
   useEffect(() => {
     async function getCourseById() {
       const res = await API.get('/courses/' + courseId);
@@ -40,42 +42,59 @@ const CourseDetailPage = () => {
   }, [courseId]);
   const nav = useNavigate();
 
-  console.log(lessons![lessonIndex]?.title , courseData?.course_name)
-    return (
-      <main>
-        {/* Breadcrumb */}
-        <Breadcrumb
-          courseName={courseData!?.course_name!}
-          lessonTitle={lessons![lessonIndex]?.title}
-        />
-        {/* Course Content */}
-        <div className="grid grid-cols-1 md:grid-cols-[1fr,350px] gap-6 p-2">
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" className="p-0" onClick={() => nav(-1) }>
-                <ChevronLeft className="h-4 w-4"  />
-              </Button>
-              <h1 className="text-xl text-gray-700 font-extrabold">
-                {courseData?.course_name}
-              </h1>
-            </div>
-
-            {/* Video Player Placeholder */}
-            <VideoPlayer videoLink={lessons![lessonIndex]?.videoUrl} />
-
-            {/* Tabs */}
-            <Tabs />
-
-            {/* Description */}
-            <Description />
+  console.log(courseData, " course data ")
+  console.log(lessons![lessonIndex]?.title, courseData?.course_name);
+  return (
+    <main>
+      {/* Breadcrumb */}
+      <Breadcrumb
+        courseName={courseData!?.course_name!}
+        lessonTitle={lessons![lessonIndex]?.title}
+      />
+      {/* Course Content */}
+      <div className="grid grid-cols-1 md:grid-cols-[1fr,350px] gap-6 p-2">
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" className="p-0" onClick={() => nav("/")}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <h1 className="text-xl text-gray-700 font-extrabold">
+              {courseData?.course_name}
+            </h1>
           </div>
 
-          {/* Course Modules */}
+          {/* Video Player Placeholder */}
+          <VideoPlayer videoLink={lessons![lessonIndex]?.videoUrl} />
 
-          <Modules lessons={lessons!} setLessonIndex={setLessonIndex} />
+          {/* Tabs */}
+          <Tabs />
+
+          {/* Description */}
+          <Description />
         </div>
-      </main>
-    );
+
+        {/* Course Modules */}
+        <div className="space-y-2 py-3">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center px-1  py-1 rounded-xl border border-gray-900 bg-yellow-400 gap-1 text-sm text-gray-800">
+              <Clock className="h-4 w-4" />{lessons?.length} lessons
+            </div>
+            <div className="flex items-center px-1 py-1 rounded-xl border border-gray-900 bg-yellow-400 gap-1 text-sm text-gray-700">
+              <Clock className="h-4 w-4" />
+              {courseData?.duration}
+            </div>
+            {/* <div className="flex items-center bg-yellow-400 px-1 py-1 rounded-xl border border-gray-900 text-sm">
+          <Star className="h-4 w-4 fill-gray-400" />
+          <span>4.8 </span>
+          <span className="text-gray-700">(86 reviews)</span>
+        </div> */}
+          </div>
+
+          <Modules lessons={lessons!} setLessonIndex={setLessonIndex} lessonIndex={lessonIndex} />
+        </div>
+      </div>
+    </main>
+  );
 };
 
 export default CourseDetailPage;

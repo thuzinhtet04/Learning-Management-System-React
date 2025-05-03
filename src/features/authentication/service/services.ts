@@ -1,5 +1,6 @@
 import { CategoryInterface } from '@/pages/studentCourse/types';
 import API from './api';
+import { CourseDetailsResponse } from '@/pages/CourseDetails/types';
 
 export const fetchCategories = async (): Promise<CategoryInterface[]> => {
   try {
@@ -11,10 +12,16 @@ export const fetchCategories = async (): Promise<CategoryInterface[]> => {
     throw error;
   }
 };
-
-export const fetchEnrollCourses = async (param: string) => {
+export const  getCourseById =   async  (courseId : string) => {
+  const res = await API.get("/courses/"+courseId);
+  // const response = await fetch(`${API_BASE_URL}/courses/${courseId}`);
+  const data = (await res.data) as CourseDetailsResponse;
+  console.log(data) 
+  return data;
+}
+export const fetchEnrollCourses = async () => {
   try {
-    const res = await API.get('/courses/my-courses?' + param);
+    const res = await API.get('/courses/my-courses');
     const data = await res.data;
     console.log(data, 'enrolled-course');
     return data;

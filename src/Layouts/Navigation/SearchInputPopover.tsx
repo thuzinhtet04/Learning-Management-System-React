@@ -5,33 +5,23 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { courses } from '../../pages/studentCourse/types';
+import { Course, courses } from '../../pages/studentCourse/types';
 import { API_BASE_URL } from '@/config/serverApiConfig';
 import { AllCourseResponse } from '../../pages/Courses/types';
 import { useDebounce } from '@uidotdev/usehooks';
 import { Link } from 'react-router-dom';
+import { useMyCourses } from '@/store/useMyCourses';
 
 export default function SearchInputPopover() {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const [courses, setCourses] = useState<courses[]>([]);
-  const debounceSearch = useDebounce(search, 500);
-
+  const { courses, getCourseByName, filteredCourses } = useMyCourses();
+  const [resultCourses, setCourses] = useState<Course[] | undefined>(courses);
   useEffect(() => {
-    async function getAllCourses() {
-      const response = await fetch(`${API_BASE_URL}/courses`);
-      const data = (await response.json()) as AllCourseResponse;
-      setCourses(data.data);
-    }
-    getAllCourses();
-  }, []);
 
-  const searchCourses =
-    debounceSearch !== ''
-      ? courses.filter((course) =>
-          course.courseName.toLowerCase().includes(search)
-        )
-      : [];
+    setCourses(getCourseByName(search));
+  }, [search]);
+  console.log(resultCourses, 'resultcourse');
 
   return (
     <div>
@@ -40,8 +30,8 @@ export default function SearchInputPopover() {
           <input
             value={search}
             type="text"
-            placeholder="Search..."
-            className="w-full max-w-xs p-2  text-sm outline-none bg-transparent  "
+            placeholder="Search Enrolled Courses"
+            className="w-full max-w-xs p-2 border  text-sm outline-none bg-transparent  "
             onChange={(e) => {
               setSearch(e.target.value);
             }}
@@ -50,27 +40,52 @@ export default function SearchInputPopover() {
           />
         </PopoverTrigger>
         <PopoverContent className="w-80 sm:w-[450px] md:w-[600px] mr-20 sm:mr-20">
-          {searchCourses.length === 0 && (
-            <div className="font-semibold h-20">Search Any Course</div>
+          {search && resultCourses?.length === 0 && (
+            <div className="font-semibold h-20">
+              There is no Course , Sorry 😢
+            </div>
           )}
           <div className="grid gap-4">
-            {searchCourses.length !== 0 &&
-              searchCourses.map((searchCourse) => (
-                <Link
-                  to={`/courses/${searchCourse.id}`}
-                  className="flex items-center p-1 gap-2"
-                  key={searchCourse.id}
-                  onClick={() => setSearch('')}
-                >
-                  <img
-                    src={searchCourse.thumbnail}
-                    className="w-24 rounded-md"
-                  />
-                  <div className="font-semibold text-sm">
-                    {searchCourse.courseName}
+            {search && resultCourses?.length !== 0
+              ? resultCourses?.map((searchCourse) => (
+                  <div
+                    // to={`/course-details/${searchCourse.id}`}
+                    className="flex items-center gap-2 border border-gray-700 p-5 rounded-md "
+                    key={searchCourse.id}
+                    // onClick={() => setSearch('')
+
+                    // }
+                  >
+                    <img
+                      src={searchCourse.thumbnail}
+                      className="w-24 rounded-md"
+                    />
+                    <div className="font-semibold text-xs ">
+                      <p className=" text-base text-teal-500">
+                        {searchCourse.course_name}
+                      </p>
+                      <p>{searchCourse.instructor_user.username}</p>
+                    </div>
                   </div>
-                </Link>
-              ))}
+                ))
+              : courses?.map((course) => (
+                  <div
+                    // to={`/course-details/${searchCourse.id}`}
+                    className="flex items-center gap-2 border border-gray-700 p-5 rounded-md "
+                    key={course.id}
+                    // onClick={() => setSearch('')
+
+                    // }
+                  >
+                    <img src={course.thumbnail} className="w-24 rounded-md" />
+                    <div className="font-semibold text-xs ">
+                      <p className=" text-base text-teal-500">
+                        {course.course_name}
+                      </p>
+                      <p>{course.instructor_user.username}</p>
+                    </div>
+                  </div>
+                ))}
           </div>
         </PopoverContent>
       </Popover>

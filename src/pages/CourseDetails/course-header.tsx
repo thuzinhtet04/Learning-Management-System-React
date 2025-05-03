@@ -7,31 +7,31 @@ type Props = {
 };
 
 export default function CourseHeader({ courseData }: Props) {
-  const totalStudents = courseData.enrollment?.length;
+  const totalStudents = courseData?.enrollment?.length;
 
   return (
     <div>
       <div className="overflow-hidden mb-2">
         <img
-          src={courseData.thumbnail}
-          alt={courseData.course_name}
+          src={courseData?.thumbnail}
+          alt={courseData?.course_name}
           className=" w-full"
         />
       </div>
-      <h1 className="text-3xl font-bold mb-2">{courseData.course_name}</h1>
+      <h1 className="text-3xl font-bold mb-2">{courseData?.course_name}</h1>
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <Badge variant="outline" className="flex items-center gap-1">
           <GraduationCap className="h-3.5 w-3.5" />
-          {courseData.level}
+          {courseData?.level}
         </Badge>
         <Badge variant="outline" className="flex items-center gap-1">
           <Clock className="h-3.5 w-3.5" />
-          {courseData.duration}
+          {courseData?.duration}
         </Badge>
-        {courseData.category && (
+        {courseData?.category && (
           <Badge variant="outline" className="flex items-center gap-1">
             <Globe className="h-3.5 w-3.5" />
-            {courseData.category.name}
+            {courseData?.category.name}
           </Badge>
         )}
         {totalStudents && (

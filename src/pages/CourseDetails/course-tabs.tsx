@@ -22,7 +22,7 @@ export default function cCourseTabs({ courseData, lessons }: Props) {
       <TabsContent value="overview" className="space-y-6">
         <div>
           <h2 className="text-xl font-semibold mb-4">About This Course</h2>
-          <p className="text-muted-foreground">{courseData.description}</p>
+          <p className="text-muted-foreground">{courseData?.description}</p>
         </div>
 
         {/* <div>
@@ -47,7 +47,7 @@ export default function cCourseTabs({ courseData, lessons }: Props) {
           <div className="text-sm text-muted-foreground mb-6">
             <span>{lessons?.length || 0} lessons</span>
             <span className="mx-2">•</span>
-            <span>{courseData.duration} total</span>
+            <span>{courseData?.duration} total</span>
           </div>
 
           {lessons && lessons.length > 0 ? (

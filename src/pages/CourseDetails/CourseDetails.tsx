@@ -10,6 +10,8 @@ import CourseShareCard from './course-share-card';
 import CoursePurchaseCard from './course-purchase-card';
 import CourseHeader from './course-header';
 import API from '@/features/authentication/service/api';
+import { useQueries, useQuery } from '@tanstack/react-query';
+import { getCourseById } from '@/features/authentication/service/services';
 
 export default function CourseDetails() {
   const { courseId } = useParams();
@@ -17,48 +19,44 @@ export default function CourseDetails() {
   const [courseData, setCourseData] = useState<courseDetails>();
   const [instructor, setInstructor] = useState<InstructorUser>();
 
+  const { data, isLoading } = useQuery({
+    queryKey: ['courses', 'noAuth'],
+    queryFn: () => getCourseById(courseId!),
+  });
+
   useEffect(() => {
-    async function getCourseById() {
-      const res = await API.get("/courses/"+courseId);
-      // const response = await fetch(`${API_BASE_URL}/courses/${courseId}`);
-      const data = (await res.data) as CourseDetailsResponse;
-      console.log(data) 
-      setCourseData(data.data);
-      setInstructor(data.data?.instructor_user!)
-    }
-    getCourseById();
-  }, [courseId]);
+    console.log('detiala');
+    setCourseData(data?.data);
+    setInstructor(data?.data?.instructor_user!);
+  }, [data, isLoading]);
 
 
+  if (isLoading) return <p>Loading ...</p>;
 
-  if (!courseData ) return <p>no course data</p>;
-  if( !instructor) return <p>no instructor</p>;
-
-  const { lessons } = courseData as courseDetails;
 
   return (
     <div className="container mx-auto px-4 py-8">
-
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Course Main Content - Left Side (2/3 width on large screens) */}
         <div className="lg:col-span-2 space-y-8">
           {/* Course Header */}
-          <CourseHeader courseData={courseData} />
+          <CourseHeader courseData={courseData!} />
 
           {/* Course Tabs */}
-          <CourseTabs courseData={courseData} lessons={lessons} />
+          <CourseTabs courseData={courseData!} lessons={courseData?.lessons!} />
         </div>
 
         {/* Course Sidebar - Right Side (1/3 width on large screens) */}
         <div className="lg:col-span-1">
           <div className="sticky top-8 space-y-6">
             {/* Course Purchase Card */}
-            <CoursePurchaseCard courseData={courseData} />
+            <CoursePurchaseCard courseData={courseData!} />
 
             {/* Instructor Card */}
             <InstructorInfoCard
-              courseData={courseData}
-              instructor={instructor}
+              courseData={courseData!}
+              instructor={instructor!}
             />
 
             {/* Share Card */}

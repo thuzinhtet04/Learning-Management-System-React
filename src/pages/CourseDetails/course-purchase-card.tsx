@@ -14,8 +14,8 @@ export default function CoursePurchaseCard({ courseData }: Props) {
   const nav = useNavigate();
   // Calculate discount percentage
   const discountPercentage = Math.round(
-    ((courseData.original_price - courseData.current_price) /
-      courseData.original_price) *
+    ((courseData?.original_price - courseData?.current_price) /
+      courseData?.original_price) *
       100
   );
   const handleEnrollNOAuth = () => {
@@ -29,18 +29,18 @@ export default function CoursePurchaseCard({ courseData }: Props) {
         <div className="flex gap-2 justify-between items-end">
           <div className="flex flex-col items-end">
             <div>
-              {courseData.original_price > courseData.current_price && (
+              {courseData?.original_price > courseData?.current_price && (
                 <span className="text-sm text-muted-foreground line-through">
-                  {formatPrice(courseData.original_price)}
+                  {formatPrice(courseData?.original_price)}
                 </span>
               )}
             </div>
             <span className="text-3xl font-bold">
-              {formatPrice(courseData.current_price)}
+              {formatPrice(courseData?.current_price)}
             </span>
           </div>
           <div className="mb-3">
-            {courseData.original_price > courseData.current_price && (
+            {courseData?.original_price > courseData?.current_price && (
               <Badge className="ml-auto">{discountPercentage}% off</Badge>
             )}
           </div>

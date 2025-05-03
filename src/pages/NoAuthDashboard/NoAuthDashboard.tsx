@@ -10,7 +10,7 @@ const NoAuthDashboard = () => {
       <main>
         <h1 className=' text-xl bg-yellow-300 p-2  text-center text-black'>You are in Guest Mode . Please Login <a className='text-blue text-blue-500 underline ' href='/login'>here</a></h1>
         <StudentHeader setCategoryId={setCategoryId} categoryId={categoryId} />
-        <IndexCourses categoryId={categoryId} />
+        <IndexCourses  categoryId={categoryId} />
         {/* <StudentCourses categoryId={categoryId} /> */}
       </main>
   )

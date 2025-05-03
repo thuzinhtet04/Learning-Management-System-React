@@ -3,6 +3,8 @@ import StudentCourseCard from './StudentCourseCard';
 import { useQuery } from '@tanstack/react-query';
 import { fetchEnrollCourses } from '@/features/authentication/service/services';
 import { useSearchParams } from 'react-router-dom';
+import { useMyCourses } from '@/store/useMyCourses';
+import { use, useEffect } from 'react';
 
 interface Props {
   categoryId: number;
@@ -12,37 +14,29 @@ const StudentCourses = ({ categoryId }: Props) => {
   //! need to  fix my-course
 
   const [searchParams, setSearchParams] = useSearchParams();
-
   const {
     data: enrolledCourses,
     isLoading,
     isError,
   } = useQuery({
-    queryFn: () =>
-      fetchEnrollCourses(
-        `${categoryId !== 0 ? 'category=' + categoryId : ''}${
-          searchParams.toString() ? searchParams.toString() + '&' : '&'
-        }`
-      ),
-    queryKey: ['courses', 'enrolled', categoryId, searchParams.toString()],
+    queryFn: () => fetchEnrollCourses(),
+    queryKey: ['courses', 'enrolled'],
   });
+  const { setCourses } = useMyCourses();
 
-  // const customEnrollments = enrolledCourses?.filter(
-  //   (data) => data.course?.categoryId === categoryId
-  // );
+  useEffect(() => {
+    setCourses(enrolledCourses?.data);
+    
+    console.log(enrolledCourses?.data , "enrolled-courses-fetch")
 
-  // if (!dummyStudentUserData.enrollments)
-  //   return <div>enrollments not found</div>;
+  }, [enrolledCourses]);
 
-  console.log(enrolledCourses, "parent")
   return (
     <div>
-      {categoryId === 0 && (
-        <StudentCourseCard enrollments={enrolledCourses} />
-      )}
-      {/* {categoryId !== 0  && (
-        <StudentCourseCard enrollments={customEnrollments} />
-      )} */}
+      <StudentCourseCard
+        categoryId={categoryId}
+        enrollments={enrolledCourses}
+      />
     </div>
   );
 };

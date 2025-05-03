@@ -10,7 +10,8 @@ import { CategoryInterface } from '../studentCourse/types';
 import { FormEvent, useEffect } from 'react';
 import SearchInput from '@/components/SearchInput';
 import API from '@/features/authentication/service/api';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
+import { useMyCourses } from '@/store/useMyCourses';
 
 interface Props {
   categoryId: number;
@@ -20,6 +21,7 @@ const arr = Array.from({ length: 5 }).map((_, index) => index + 1);
 
 export default function StudentHeader({ categoryId, setCategoryId }: Props) {
   const { categories, setCategories } = useCategories();
+  const path = useLocation();
   const { data, isLoading, isError } = useQuery<CategoryInterface[], Error>({
     queryKey: ['categories'],
     queryFn: fetchCategories,
@@ -34,6 +36,7 @@ export default function StudentHeader({ categoryId, setCategoryId }: Props) {
       setCategories(data);
     }
   }, [data]);
+  const { getCourseByCategory } = useMyCourses();
   const handleSearch = async (
     e: FormEvent<HTMLFormElement>,
     search: string
@@ -43,23 +46,24 @@ export default function StudentHeader({ categoryId, setCategoryId }: Props) {
   };
 
   return (
-    <header className="h-20 w-full flex justify-between items-center space-x-2 ">
+    <header className="h-20 w-full mt-5 flex  justify-between  space-x-2 ">
       <div className="hidden md:block md:text-2xl font-bold mb-2 ">
         {authUser?.data.username ? 'My Courses' : 'Explore Courses'}
       </div>
       <div className="flex items-stretch  gap-1 ">
-        <SearchInput onSubmit={handleSearch} />
+        {!authUser && <SearchInput onSubmit={handleSearch} />}
+
         <Button
           variant={`${categoryId === 0 ? 'default' : 'outline'}`}
           onClick={() => {
             setCategoryId(0);
+            getCourseByCategory(0);
           }}
-          className="mb-2"
         >
           All Courses
         </Button>
 
-        <ScrollArea className="max-w-[180px] md:max-w-md whitespace-nowrap rounded-md pb-1">
+        <ScrollArea className="max-w-[180px] md:max-w-md whitespace-nowrap mt-0 rounded-md pb-1">
           <div className="flex flex-row gap-1  justify-between items-center overflow-x-auto w-auto p-1 pb-2">
             {isLoading && arr.map((index) => <LoaderButton key={index} />)}
             {!isLoading &&
@@ -72,6 +76,7 @@ export default function StudentHeader({ categoryId, setCategoryId }: Props) {
                   key={category.id}
                   onClick={() => {
                     setCategoryId(category.id);
+                    getCourseByCategory(category.id);
                   }}
                 >
                   {category.name}

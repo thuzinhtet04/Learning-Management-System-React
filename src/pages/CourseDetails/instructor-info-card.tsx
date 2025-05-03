@@ -17,9 +17,9 @@ export default function InstructorInfoCard({ courseData, instructor }: Props) {
         <h2 className="text-xl font-semibold">Instructor</h2>
         <div className="flex items-center gap-4">
           <div className="relative h-16 w-16 rounded-full overflow-hidden">
-            <Link to={`/instructor/${instructor.laravel_through_key}`}>
+            <Link to={`/instructor/${instructor?.laravel_through_key}`}>
               <img
-                src={instructor.profile_photo ?? "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?t=st=1745687290~exp=1745690890~hmac=8a900b8b8cee8d963d5f5128578627883c9e4fca9928a3261b1ceb09328bb389&w=740"}
+                src={instructor?.profile_photo ?? "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541"}
                 alt={instructor?.username}
                 // fill
                 className="object-cover"
@@ -27,8 +27,8 @@ export default function InstructorInfoCard({ courseData, instructor }: Props) {
             </Link>
           </div>
           <div>
-            <Link to={`/instructor/${instructor.laravel_through_key}`}>
-              <h3 className="font-medium">{instructor.username}</h3>
+            <Link to={`/instructor/${instructor?.laravel_through_key}`}>
+              <h3 className="font-medium">{instructor?.username}</h3>
             </Link>
             {/* <div className="flex gap-2 mt-1">
               {courseData.socialLink.x && (
@@ -106,7 +106,7 @@ export default function InstructorInfoCard({ courseData, instructor }: Props) {
         </div>
         <Separator />
         <p className="text-sm text-muted-foreground">
-          {instructor.edu_background}      </p>
+          {instructor?.edu_background}      </p>
       </CardContent>
     </Card>
   );
