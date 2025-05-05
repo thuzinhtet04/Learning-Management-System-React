@@ -138,6 +138,8 @@ const NoAuthCourseCard = memo(
             </CardFooter>
           </Card>
         ))}
+        {courseData?.length === 0 && <h1 className=' col-span-full text-center text-4xl text-yellow-600 text-nowrap'>There is no Course, 
+          sorry 😭</h1> }
       </div>
     );
   }

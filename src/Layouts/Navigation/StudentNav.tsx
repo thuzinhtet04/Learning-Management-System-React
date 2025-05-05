@@ -26,13 +26,13 @@ const StudentNav = () => {
   const { courses, getCourseByName } = useMyCourses();
   console.log(token);
 
-  const handleSearch = async (
-    e: FormEvent<HTMLFormElement>,
-    search: string
-  ) => {
-    e.preventDefault();
-    setSearchParams({ search: search });
-  };
+  // const handleSearch = async (
+  //   e: FormEvent<HTMLFormElement>,
+  //   search: string
+  // ) => {
+  //   e.preventDefault();
+  //   setSearchParams({ search: search });
+  // };
   return (
     <header className="h-20 w-full  flex justify-between items-center px-2  border-slate-600">
       <div className="flex justify-between items-center">
@@ -59,15 +59,22 @@ const StudentNav = () => {
           ) : (
             <form
               onSubmit={(e) => {
-                // e.preventDefault();
-                handleSearch(e, search);
-                nav('/courses');
+                e.preventDefault();
+                setSearchText(search);
+                // handleSearch(e, search);
+                if (pathname === '/courses') {
+                  const params = Object.fromEntries(searchParams.entries());
+                  setSearchParams({ ...params, search: search });
+                } else {
+                  nav(`/courses?search=${search}`);
+                }
               }}
               className="flex justify-between items-center px-3 border border-gray-300 rounded-full"
             >
               <input
                 type="text"
                 name="search"
+                defaultValue={searchParams.get("search")!}
                 placeholder="Explore Courses..."
                 className="w-full   bg-red-500 max-w-xs p-2  text-sm outline-none   "
                 onChange={(e) => {

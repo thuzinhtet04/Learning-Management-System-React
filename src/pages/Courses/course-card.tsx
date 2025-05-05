@@ -1,15 +1,17 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Course } from '../studentCourse/types';
 import { formatPrice } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
 import { getInstructorById } from '@/services';
+import { useMyCourses } from '@/store/useMyCourses';
 
 interface Props {
   course: Course;
 }
 
 export default function CourseCard({ course }: Props) {
+  const nav = useNavigate();
   // const {
   //   data: instructor,
   //   isLoading,
@@ -23,14 +25,27 @@ export default function CourseCard({ course }: Props) {
   // if (isLoading) return <div>Loading...</div>;
   // if (isError) return <div>Something Wrong</div>;
   // if (!instructor) return null;
-console.log(course)
+
+  const { courses: Mycourses } = useMyCourses();
+  const handleClick = (id: number) => {
+    if (Mycourses?.find((course) => course.id === id)) {
+      nav('/course-details/' + id);
+    } else {
+      nav('/courses/' + id);
+    }
+  };
+
+  console.log(course);
   return (
     <div
+      onClick={() => {
+        handleClick(course.id);
+      }}
       className={
         ' border-[#575757] p-2 border border-1 bg-teal-400 dark:text-black rounded-md flex flex-col h-full'
       }
     >
-      <Link to={`/courses/${course.id}`} className="flex-grow">
+      <div className="flex-grow">
         {/* Image section */}
 
         <div className="relative  bg-white">
@@ -55,7 +70,7 @@ console.log(course)
             {course.description!.slice(0, 50)}...
           </div>
         </div>
-      </Link>
+      </div>
 
       {/* Instructor and price */}
       <div className="mt-auto m-2">
@@ -66,10 +81,17 @@ console.log(course)
           {course.instructor_id}
           <div className="flex items-center gap-2">
             <Avatar>
-              <AvatarImage src={course?.instructor_user.profile_photo!} alt="profile_photo" />
-              <AvatarFallback>{course.instructor_user.username.charAt(0)}</AvatarFallback>
+              <AvatarImage
+                src={course?.instructor_user.profile_photo!}
+                alt="profile_photo"
+              />
+              <AvatarFallback>
+                {course.instructor_user.username.charAt(0)}
+              </AvatarFallback>
             </Avatar>
-            <div className="text-sm font-semibold">{course?.instructor_user.username}</div>
+            <div className="text-sm font-semibold">
+              {course?.instructor_user.username}
+            </div>
           </div>
           <div className="flex flex-col items-end">
             <div className="text-[11px] text-slate-700">

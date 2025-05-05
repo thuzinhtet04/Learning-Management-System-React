@@ -22,7 +22,7 @@ const IndexCourses = ({ categoryId }: Props) => {
     isError,
   } = useQuery({
     queryFn: () => fetchCourses(`${ categoryId!==0 ? ( "category="+categoryId+"&") : "" }${searchParams.toString() ? searchParams.toString()+"&" : "&"  }`),
-    queryKey: ['courses' , `category=${categoryId}&search=${searchParams.toString()}`],
+    queryKey: ['courses' , categoryId , `category=${categoryId}&search=${searchParams.toString()}` ],
   });
   if (isLoading) return <CoursesLoader count={8} />;
   if (courses)

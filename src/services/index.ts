@@ -2,12 +2,12 @@ import API from '@/features/authentication/service/api';
 import { UserResponse } from '@/pages/CourseDetails/types';
 import { AllCategoryResponse, AllCourseResponse } from '@/pages/Courses/types';
 
-export async function getAllCourses() {
+export async function getAllCourses(param : string , category : number = 0) {
   try {
-    const response = await API.get<AllCourseResponse>('/courses');
+    const response = await API.get('/courses'+`?category=`+category+"&search=" +param);
 
     const data = response.data;
-    // console.log('res axios >>>', response.data);
+    console.log('res axios >>>', response);
 
     return data.data;
   } catch (error) {
@@ -17,7 +17,7 @@ export async function getAllCourses() {
 
 export async function getAllCategories() {
   try {
-    const response = await API.get<AllCategoryResponse>('/category');
+    const response = await API.get<AllCategoryResponse>('/categories');
     const data = response.data;
 
     return data.data;

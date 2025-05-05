@@ -1,5 +1,5 @@
 import { Navigate, useRoutes } from 'react-router-dom';
-import { Login, Register, Dashboard } from './elements';
+import { Login, Register } from './elements';
 import {
   AllCourses,
   CourseDetails,
@@ -7,6 +7,7 @@ import {
   NewCourse,
 } from './elements';
 import CourseDetailPage from '@/pages/StudentCourseDetails/CourseDetailPage';
+import Dashboard from '@/pages/Dashboard/Dashboard';
 
 export default function UnAuth() {
   return useRoutes([
@@ -22,14 +23,14 @@ export default function UnAuth() {
       path: '/register',
       element: <Register />,
     },
-    {
-      path: 'courses',
-      element: <AllCourses />,
-    },
-    {
-      path: 'courses/new',
-      element: <NewCourse />,
-    },
+    // {
+    //   path: 'courses',
+    //   element: <AllCourses />,
+    // },
+    // {
+    //   path: 'courses/new',
+    //   element: <NewCourse />,
+    // },
     {
       path: 'courses/:courseId',
       element: <CourseDetails />,

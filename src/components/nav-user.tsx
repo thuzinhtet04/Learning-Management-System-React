@@ -25,7 +25,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '@/provider/theme-provide';
 import { useAuthStore } from '@/store/authStore';
 
@@ -33,9 +33,9 @@ export function NavUser() {
   const { isMobile } = useSidebar();
   const { theme } = useTheme();
   const { authUser, logout } = useAuthStore();
+  const nav = useNavigate();
 
   const data = authUser?.data;
-
   const isLoggedIn = !!data; // Check if the user is logged in
 
   return (
@@ -59,16 +59,16 @@ export function NavUser() {
                 <AvatarImage
                   width={20}
                   height={20}
-                  src={'/Brian.jpeg'}
-                  alt={data?.name}
+                  src={data?.profile_photo}
+                  alt={data?.username}
                 />
                 <AvatarFallback className="rounded-lg">
-                  {data?.name?.charAt(0)}
+                  {data?.username?.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {data?.name} Need to Login
+                  {data?.username} Need to Login
                 </span>
                 <span className="truncate text-xs">{data?.email}</span>
               </div>
@@ -84,13 +84,15 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal cursor-pointer">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage alt={data?.name} />
+                  <AvatarImage alt={data?.username} />
                   <AvatarFallback className="rounded-lg">
-                    {data?.name?.charAt(0)}
+                    {data?.username?.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{data?.name}</span>
+                  <span className="truncate font-semibold">
+                    {data?.username}
+                  </span>
                   <span className="truncate text-xs">{data?.email}</span>
                 </div>
               </div>
@@ -111,29 +113,17 @@ export function NavUser() {
             <DropdownMenuSeparator />
 
             {/* Conditionally render Logout or Login/Register based on auth state */}
-            {isLoggedIn ? (
+            {isLoggedIn && (
               <DropdownMenuItem
                 className="cursor-pointer"
-                onClick={() => logout()}
+                onClick={() => {
+                  nav('/login');
+                  logout();
+                }}
               >
                 <LogOut />
                 Log out
               </DropdownMenuItem>
-            ) : (
-              <>
-                <Link to="/login">
-                  <DropdownMenuItem className="cursor-pointer">
-                    <LogIn />
-                    Login
-                  </DropdownMenuItem>
-                </Link>
-                <Link to="/register">
-                  <DropdownMenuItem className="cursor-pointer">
-                    <LucideLogIn />
-                    <span>Register</span>
-                  </DropdownMenuItem>
-                </Link>
-              </>
             )}
           </DropdownMenuContent>
         </DropdownMenu>

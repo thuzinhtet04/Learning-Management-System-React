@@ -48,13 +48,15 @@ const StudentCourseCard = memo(
     const handleContinueClick = (id: number) => {
       navigate(`/course-details/${id}`);
     };
-    const [courseData, setCourseData] = useState< unknown[] | undefined>();
+    const [courseData, setCourseData] = useState<unknown[] | undefined>();
     const { getCourseByCategory, courses, setCourses, filteredCourses } =
       useMyCourses();
     console.log(courses, ' courses at student course card');
-
     useEffect(() => {
-      console.log("chage category id " , categoryId)
+      setCourseData(courses);
+    }, []);
+    useEffect(() => {
+      console.log('chage category id ', categoryId);
       setCourseData(
         filteredCourses?.map(({ instructor_user, ...course }) => ({
           ...course,
@@ -62,14 +64,6 @@ const StudentCourseCard = memo(
         }))
       );
     }, [categoryId]);
-
-
-    // const courseData = useMemo(() => {
-    //   return filteredCourses?.map(({ instructor_user, ...course }) => ({
-    //     ...course,
-    //     instructor: instructor_user,
-    //   }));
-    // }, [categoryId , courses , filteredCourses]);
 
     console.log(courseData, categoryId, 'courseDAta');
 
@@ -168,7 +162,7 @@ const StudentCourseCard = memo(
         <div>
           {courseData?.length === 0 && (
             <h1 className=" text-3xl text-center text-red-300 ">
-              There is no course , Explore more field or categpry{' '}
+              There is no course , Explore more field or category{' '}
             </h1>
           )}
         </div>

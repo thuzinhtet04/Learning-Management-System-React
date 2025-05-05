@@ -1,8 +1,10 @@
-import { Navigate, NonIndexRouteObject, RouteObject, useRoutes } from 'react-router-dom';
 import {
-
-
- 
+  Navigate,
+  NonIndexRouteObject,
+  RouteObject,
+  useRoutes,
+} from 'react-router-dom';
+import {
   AllCourses,
   CourseDetails,
   InstructorDetails,
@@ -11,11 +13,12 @@ import {
 
 // import CourseDetailPage from '@/pages/course/CourseDetailPage';
 import { useAuthStore } from '@/store/authStore';
-import { CoursePageTesting, Dashboard, Login, MainLayout, Register } from './elements';
+import { CoursePageTesting, Login, MainLayout, Register } from './elements';
 import Loader from '@/components/Loading';
 import CourseDetailPage from '@/pages/StudentCourseDetails/CourseDetailPage';
 import CourseRoute from './Course.route';
 import VideoPlayer from '@/pages/StudentCourseDetails/components/VideoPlayer';
+import Dashboard from '@/pages/Dashboard/Dashboard';
 
 export default function Admin() {
   const { authUser } = useAuthStore();
@@ -23,10 +26,10 @@ export default function Admin() {
   return useRoutes([
     {
       path: '/',
+      errorElement: <Navigate to="/login" />,
       element: <MainLayout />,
       children: [
         {
-     
           element: <Dashboard />,
           index: true,
         },
@@ -35,10 +38,8 @@ export default function Admin() {
           element: <AllCourses />,
         },
         {
-          path : 'course-details/:courseId',
-          element : <CourseDetailPage/>,
-  
-
+          path: 'course-details/:courseId',
+          element: <CourseDetailPage />,
         },
         {
           path: 'courses/new',
@@ -52,9 +53,6 @@ export default function Admin() {
           path: 'instructor/:instructorId',
           element: <InstructorDetails />,
         },
-
-
-
       ],
     },
     {

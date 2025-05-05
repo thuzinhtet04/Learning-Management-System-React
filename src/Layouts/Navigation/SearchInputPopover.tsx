@@ -47,7 +47,7 @@ export default function SearchInputPopover() {
           )}
           <div className="grid gap-4">
             {search && resultCourses?.length !== 0
-              ? resultCourses?.map((searchCourse) => (
+              && resultCourses?.map((searchCourse) => (
                   <div
                     // to={`/course-details/${searchCourse.id}`}
                     className="flex items-center gap-2 border border-gray-700 p-5 rounded-md "
@@ -67,8 +67,8 @@ export default function SearchInputPopover() {
                       <p>{searchCourse.instructor_user.username}</p>
                     </div>
                   </div>
-                ))
-              : courses?.map((course) => (
+                )) }
+              { !search && courses?.map((course) => (
                   <div
                     // to={`/course-details/${searchCourse.id}`}
                     className="flex items-center gap-2 border border-gray-700 p-5 rounded-md "

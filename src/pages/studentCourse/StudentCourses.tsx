@@ -11,7 +11,7 @@ interface Props {
 }
 
 const StudentCourses = ({ categoryId }: Props) => {
-  //! need to  fix my-course
+
 
   const [searchParams, setSearchParams] = useSearchParams();
   const {

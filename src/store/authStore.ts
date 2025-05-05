@@ -1,6 +1,6 @@
 import API from '@/features/authentication/service/api';
 import { IAuthUser } from '@/features/authentication/types/types';
-import { redirect } from 'react-router-dom';
+import { Navigate, redirect } from 'react-router-dom';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -39,7 +39,7 @@ export const useAuthStore = create<AuthState>()(
           refreshToken: null,
           userRole: null,
         });
-        redirect('/login');
+        Navigate({ to: '/login' });
       },
 
       fetchUser: async () => {

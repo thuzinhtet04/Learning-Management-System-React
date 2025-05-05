@@ -6,15 +6,16 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { useQuery } from '@tanstack/react-query';
 import { getAllCategories } from '@/services';
 
 interface Props {
   onCategoryId: (categoryId: number) => void;
+  category : number
 }
 
-export default function ExploreNavigationMenu({ onCategoryId }: Props) {
+export default function ExploreNavigationMenu({ onCategoryId , category }: Props) {
   const { isLoading, isError, data } = useQuery({
     queryKey: ['allCategories'],
     queryFn: getAllCategories,
@@ -33,18 +34,20 @@ export default function ExploreNavigationMenu({ onCategoryId }: Props) {
     },
     ...data,
   ];
-
+  
   return (
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger disabled={isLoading}>
-            {isLoading ? 'loading...' : 'Explore'}
+            {isLoading && 'loading...' }
+            { data && `${categories.find( el => el.id === category)?.name}` }
+
           </NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <ScrollArea className="h-auto w-48 rounded-md border">
+          <NavigationMenuContent className="">
+            <ScrollArea className="  w-48 rounded-md border max-h-[400px]">
               {/* <ScrollArea className="h-72 w-48 rounded-md border"> */}
-              <ul>
+              <ul className="max-h-[400px] overflow-y-auto overflow-x-hidden ">
                 {categories.map((data) => (
                   <li key={data.id}>
                     <NavigationMenuLink
@@ -57,7 +60,10 @@ export default function ExploreNavigationMenu({ onCategoryId }: Props) {
                     </NavigationMenuLink>
                   </li>
                 ))}
+                <ScrollBar />
               </ul>
+
+              {/* <ScrollBar /> */}
             </ScrollArea>
           </NavigationMenuContent>
         </NavigationMenuItem>

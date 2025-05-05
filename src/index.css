@@ -10,6 +10,9 @@ body {
   margin: 0;
   box-sizing: border-box;
 }
+::-webkit-scrollbar {
+  width: 0px;
+}
 
 @tailwind base;
 @tailwind components;

@@ -13,7 +13,7 @@ import { useMutation } from '@tanstack/react-query';
 import { loginUserFn } from '../service/authApi';
 
 const LoginForm = () => {
-  const { theme } = useTheme();
+    const { theme } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
@@ -43,7 +43,7 @@ const LoginForm = () => {
     mutationFn: loginUserFn,
     onSuccess: () => {
       toast.success('Welcome back! Login successful');
-      navigate('/dashboard');
+      navigate('/');
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (error: any) => {
@@ -55,6 +55,7 @@ const LoginForm = () => {
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     login(data);
+
  
   };
   return (
