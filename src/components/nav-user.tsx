@@ -101,14 +101,14 @@ export function NavUser() {
 
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
+            <Link to="/profile">
               <DropdownMenuItem className="cursor-pointer">
-                <BadgeCheck />
-                Account
+            
+                  {' '}
+                  <BadgeCheck />
+                  Account
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
+                </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
 

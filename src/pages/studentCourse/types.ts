@@ -83,8 +83,19 @@ export interface users {
   dob: string;
   address: string;
   profile_photo: string;
-  available: boolean;
+  is_available: boolean;
+  created_at? : string ;
+  updated_at? : string ;
+  roleName : string;
+  role_id :  number;
 }
+
+
+
+
+
+
+
 
 export type Role = 'admin' | 'instructor' | 'student';
 

@@ -1,4 +1,3 @@
-✅need to make student dashboard for categroy filter course 
+✅need to make student dashboard for category filter course 
 
-student dashboard done 
 need to set profile page

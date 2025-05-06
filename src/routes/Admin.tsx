@@ -19,6 +19,7 @@ import CourseDetailPage from '@/pages/StudentCourseDetails/CourseDetailPage';
 import CourseRoute from './Course.route';
 import VideoPlayer from '@/pages/StudentCourseDetails/components/VideoPlayer';
 import Dashboard from '@/pages/Dashboard/Dashboard';
+import StudentProfile from '@/pages/profile/studentProfile';
 
 export default function Admin() {
   const { authUser } = useAuthStore();
@@ -50,8 +51,8 @@ export default function Admin() {
           element: <CourseDetails />,
         },
         {
-          path: 'instructor/:instructorId',
-          element: <InstructorDetails />,
+          path: 'profile',
+          element: <StudentProfile />,
         },
       ],
     },

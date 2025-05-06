@@ -1,4 +1,4 @@
-import { CategoryInterface } from '@/pages/studentCourse/types';
+import { CategoryInterface, users } from '@/pages/studentCourse/types';
 import API from './api';
 import { CourseDetailsResponse } from '@/pages/CourseDetails/types';
 
@@ -12,13 +12,20 @@ export const fetchCategories = async (): Promise<CategoryInterface[]> => {
     throw error;
   }
 };
-export const  getCourseById =   async  (courseId : string) => {
-  const res = await API.get("/courses/"+courseId);
+export const fetchProfile = async (): Promise<users> => {
+  const res = await API.get('/auth/me');
+  const data = await res.data;
+  console.log(data, 'profile');
+  return data.data;
+};
+
+export const getCourseById = async (courseId: string) => {
+  const res = await API.get('/courses/' + courseId);
   // const response = await fetch(`${API_BASE_URL}/courses/${courseId}`);
   const data = (await res.data) as CourseDetailsResponse;
-  console.log(data) 
+  console.log(data);
   return data;
-}
+};
 export const fetchEnrollCourses = async () => {
   try {
     const res = await API.get('/courses/my-courses');
