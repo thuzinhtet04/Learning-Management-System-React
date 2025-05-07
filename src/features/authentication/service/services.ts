@@ -18,6 +18,12 @@ export const fetchProfile = async (): Promise<users> => {
   console.log(data, 'profile');
   return data.data;
 };
+export const updateProfile = async (formData: FormData): Promise<users> => {
+  const res = await API.post('/users/profile-photo', formData);
+  const data = await res.data;
+  console.log(data, 'profile');
+  return data.data;
+};
 
 export const getCourseById = async (courseId: string) => {
   const res = await API.get('/courses/' + courseId);
