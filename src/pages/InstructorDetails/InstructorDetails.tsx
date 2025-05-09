@@ -19,7 +19,7 @@ export default function InstructorDetails() {
     async function getInstructorById() {
       const response = await API.get(`/instructors/${instructorId}`);
       const data = (await response.data) as UserResponse;
-      console.log(data);
+      console.log(data  , "instructor details");
       setInstructor(data.data);
       setCourses(data.data.courses)
     }

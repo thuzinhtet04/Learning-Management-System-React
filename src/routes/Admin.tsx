@@ -54,6 +54,10 @@ export default function Admin() {
           path: 'profile',
           element: <StudentProfile />,
         },
+        {
+          path: 'instructor/:instructorId',
+          element: <InstructorDetails />,
+        },
       ],
     },
     {

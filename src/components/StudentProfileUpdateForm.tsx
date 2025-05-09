@@ -1,5 +1,5 @@
 import { useIsMobile } from '@/hooks/use-mobile';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -41,7 +41,7 @@ import { DayPicker } from 'react-day-picker';
 const StudentProfileUpdateForm = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [date, setDate] = useState<Date>();
+  const [date, setDate] = useState<Date | string | null>(null);
   console.log(date, 'data log');
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
@@ -55,19 +55,24 @@ const StudentProfileUpdateForm = () => {
     queryFn: fetchProfile,
   });
 
-  const { mutate, data, isPending } = useMutation<users>({
+  const { mutate, data, isPending } = useMutation({
     mutationKey: ['profile', 'update'],
-    mutationFn: (form : FormData) => updateProfile(form),
+    mutationFn: async (form: FormData) => updateProfile(form, user?.id!),
+    onSuccess: (data) => {
+      setProfileImage(data?.profile_photo);
+    },
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const url = URL.createObjectURL(file);
-
       setProfileImage(url as string);
     }
   };
+  useEffect(() => {
+    setDate(user?.dob || null)
+  }, [user]);
 
   const triggerFileInput = () => {
     fileInputRef.current?.click();
@@ -153,11 +158,13 @@ const StudentProfileUpdateForm = () => {
           className="space-y-6"
           onSubmit={(e) => {
             e.preventDefault();
-            console.log(e.target);
+            console.log(date);
             const form = new FormData(e.target as HTMLFormElement);
-            form.append('dob', date?.toString() as string);
+            const jsDate = new Date(`${date}`);
+            const formatted = jsDate.toISOString().split('T')[0]; // "2025-05-28"
+            form.set('dob', formatted);
 
-            mutate(form);
+            mutate(form as FormData);
           }}
         >
           <div className="flex flex-col items-center mb-6">
@@ -165,7 +172,7 @@ const StudentProfileUpdateForm = () => {
               <Avatar className=" avatar size-24 rounded-full inline-block overflow-hidden border-2 border-primary/20">
                 <AvatarImage
                   className=" object-cover object-center w-full h-full"
-                  src={profileImage || ''}
+                  src={profileImage || user?.profile_photo}
                 />
                 <AvatarFallback className="bg-muted text-center flex justify-center items-center  h-full">
                   <User className="w-12 h-12 text-muted-foreground inline-block bg-red-400 text-center" />
@@ -200,12 +207,18 @@ const StudentProfileUpdateForm = () => {
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
 
-              <Input id="username" name="username" placeholder="johndoe" />
+              <Input
+                id="username"
+                defaultValue={user?.username}
+                name="username"
+                placeholder="johndoe"
+              />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
+                defaultValue={user?.email}
                 id="email"
                 type="email"
                 name="email"
@@ -223,6 +236,7 @@ const StudentProfileUpdateForm = () => {
                 id="phone"
                 name="phone"
                 type="tel"
+                defaultValue={user?.phone}
                 placeholder="+1 (555) 123-4567"
               />
             </div>
@@ -253,9 +267,9 @@ const StudentProfileUpdateForm = () => {
                     className=" bg-red-400 p-5 gap-2
                   "
                     mode="single"
-                    selected={date}
+                    selected={date as Date}
                     onSelect={(selectedDate) => {
-                      setDate(selectedDate);
+                      setDate(selectedDate as Date);
                       setOpen(false); // 🚀 close the popover after picking
                     }}
                     initialFocus
@@ -270,6 +284,8 @@ const StudentProfileUpdateForm = () => {
             <Label htmlFor="address">Address</Label>
             <Textarea
               id="address"
+              defaultValue={user?.address}
+              name="address"
               placeholder="123 Main St, City, State, Zip"
               className="min-h-[80px]"
             />
@@ -292,8 +308,8 @@ const StudentProfileUpdateForm = () => {
         </form>
       </CardContent>
       <CardFooter>
-        <Button form="profile-form" className="w-full">
-          Save Changes
+        <Button form="profile-form" disabled={isPending} className="w-full">
+          {isPending ? "loading..." : "Update Profile"}
         </Button>
       </CardFooter>
     </Card>
