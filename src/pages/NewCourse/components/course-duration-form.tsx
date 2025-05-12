@@ -21,7 +21,7 @@ export default function CourseDurationForm({ form }: Props) {
         <FormItem>
           <FormLabel>Course Duration</FormLabel>
           <FormControl>
-            <Input type="number" placeholder="Course Duration" {...field} />
+            <Input type="number" placeholder="2 hours" {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -29,3 +29,4 @@ export default function CourseDurationForm({ form }: Props) {
     />
   );
 }
+//! need to make duration 

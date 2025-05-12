@@ -13,12 +13,12 @@ import { Search } from 'lucide-react';
 import { useSearchContext } from '@/provider/search-provider';
 import { useMyCourses } from '@/store/useMyCourses';
 import { FormEvent, useState } from 'react';
+import SearchInputNav from '@/components/SearchInputNav';
 // import { Search } from 'lucide-react';
 const StudentNav = () => {
   const { authUser, token } = useAuthStore();
   const [search, setSearch] = useState<string>('');
   const { pathname } = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
   // console.log('pathname >>>', pathname);
   const { setSearchText } = useSearchContext();
   // console.log('searchText >>>', searchText);
@@ -53,40 +53,15 @@ const StudentNav = () => {
       </div>
 
       <div className="flex flex-row gap-2 justify-between items-center ">
-        <div className="">
-          {pathname.includes('/course-details/') ? (
-            <SearchInputPopover />
-          ) : (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                setSearchText(search);
-                // handleSearch(e, search);
-                if (pathname === '/courses') {
-                  const params = Object.fromEntries(searchParams.entries());
-                  setSearchParams({ ...params, search: search });
-                } else {
-                  nav(`/courses?search=${search}`);
-                }
-              }}
-              className="flex justify-between items-center px-3 border border-gray-300 rounded-full"
-            >
-              <input
-                type="text"
-                name="search"
-                defaultValue={searchParams.get("search")!}
-                placeholder="Explore Courses..."
-                className="w-full   bg-red-500 max-w-xs p-2  text-sm outline-none   "
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                }}
-              />
-              <button>
-                <Search className="w-5" />
-              </button>
-            </form>
-          )}
-        </div>
+        {authUser?.data.roleName === 'student' && (
+          <SearchInputNav
+            pathname={pathname}
+            setSearchText={setSearchText}
+            search={search}
+            setSearch={setSearch}
+          />
+        )}
+
         <div className="flex flex-row  gap-2 justify-between items-center">
           <ModeToggle />
         </div>

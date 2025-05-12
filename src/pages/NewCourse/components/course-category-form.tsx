@@ -6,7 +6,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { newCourseFormType } from '../useNewCourseForm';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Check, ChevronsUpDown, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -24,19 +24,23 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
+import { useCategories } from '@/store/useCategories';
+import { CategoryInterface } from '@/pages/studentCourse/types';
 
 type Props = {
   form: newCourseFormType;
-  category: string;
-  onCategory: (category: string) => void;
+  category: CategoryInterface | null;
+  onCategory: React.Dispatch<
+    React.SetStateAction<CategoryInterface | null | undefined>
+  >;
 };
 
-const categories = [
-  { label: 'Web Development', value: 1 },
-  { label: 'Mobile Development', value: 2 },
-  { label: 'Data Science', value: 3 },
-  { label: 'Cloud Computing', value: 4 },
-];
+// const categories = [
+//   { label: 'Web Development', value: 1 },
+//   { label: 'Mobile Development', value: 2 },
+//   { label: 'Data Science', value: 3 },
+//   { label: 'Cloud Computing', value: 4 },
+// ];
 
 export default function CourseCategoryForm({
   form,
@@ -44,32 +48,42 @@ export default function CourseCategoryForm({
   onCategory,
 }: Props) {
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const categoryRef = useRef<HTMLInputElement | string>('');
 
   const handleSelect = (currentValue: string) => {
-    const selectedOption = categories.find(
-      (option) => option.label === currentValue
+    // console.log(currentValue , "currentValue")
+    const selectedOption = categories?.find(
+      (option) => option.name === currentValue
     );
     if (selectedOption) {
-      onCategory(selectedOption.label);
-      form.setValue('categoryName', selectedOption.label);
+      console.log('this is selectedOption', selectedOption);
+      onCategory(selectedOption);
+
+      // categoryRef.current.innerText = category?.name as string;
+      form.setValue('category_id', selectedOption.id);
+      form.setValue('category_name', selectedOption.name);
     }
     setOpen(false);
   };
 
   const handleClear = () => {
-    onCategory('');
-    form.setValue('categoryName', '');
+    onCategory(null);
+    form.setValue('category_id', 0);
+    form.setValue('category_name', '');
   };
 
   // console.log(
   //   'category name field >>>',
   //   form?.getValues('categoryName')
   // );
+  const { categories } = useCategories();
+  console.log(categories, 'cate4dfasl');
 
   return (
     <FormField
       control={form.control}
-      name="categoryName"
+      name="category_name"
       render={({ field }) => (
         <FormItem className="flex flex-col">
           <FormLabel>Category</FormLabel>
@@ -77,23 +91,31 @@ export default function CourseCategoryForm({
           <FormControl>
             <div className="relative">
               <Input
+                // className=" border p-1 w-full h-full "
                 {...field}
-                placeholder="category"
-                value={field.value || ''}
+                ref={categoryRef}
+                name="category_name"
+                // placeholder="category"
+                // value={field.value || ''}
                 // value={categoryName}
+                // value={category.name}
                 onFocus={() => {
                   setOpen(true);
                 }}
                 onChange={(e) => {
-                  field.onChange(e);
-                  onCategory(e.target.value);
-                  // setCategoryName(e.target.value);
+                  if (e.target.value !== '') {
+                    return;
+                  }
+                  onCategory(
+                    categories?.find((el) => el.name.includes(e.target.value))
+                  );
 
                   if (!open) {
                     setOpen(true);
                   }
                 }}
               />
+
               {category && (
                 <Button
                   variant="ghost"
@@ -117,32 +139,32 @@ export default function CourseCategoryForm({
                 </PopoverTrigger>
                 <PopoverContent className="p-0 w-auto" align="end">
                   <Command>
-                    <CommandInput value={category} onValueChange={onCategory} />
+                    <CommandInput value={search} onValueChange={setSearch} />
                     <CommandList>
-                      <CommandEmpty>{'emptyMessage'}</CommandEmpty>
+                      {/* <CommandEmpty>{'emptyMessage'}</CommandEmpty> */}
                       <CommandGroup className="max-h-60 overflow-auto">
                         {categories
-                          .filter((option) =>
-                            option.label
+                          ?.filter((option) =>
+                            option.name
                               .toLowerCase()
-                              .includes(category.toLowerCase())
+                              .includes(search.toLowerCase())
                           )
                           .map((option) => (
                             <CommandItem
-                              key={option.value}
-                              value={option.label}
+                              key={option.id}
+                              value={option.id}
                               onSelect={handleSelect}
                               className="flex items-center"
                             >
                               <Check
                                 className={cn(
                                   'mr-2 h-4 w-4',
-                                  category === option.label
+                                  category === option.name
                                     ? 'opacity-100'
                                     : 'opacity-0'
                                 )}
                               />
-                              {option.label}
+                              {option.name}
                             </CommandItem>
                           ))}
                       </CommandGroup>

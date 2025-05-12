@@ -18,8 +18,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '@/utils';
+import { DestroyCourseByInstructor } from '@/services';
+import { useQueryClient } from '@tanstack/react-query';
 
-export const useColumnOptions = (): ColumnDef<CourseTableType>[] => {
+export const useColumnOptions = (refetch): ColumnDef<CourseTableType>[] => {
   return [
     {
       accessorKey: 'id',
@@ -135,6 +137,7 @@ export const useColumnOptions = (): ColumnDef<CourseTableType>[] => {
       cell: ({ row }) => {
         const payment = row.original;
 
+        const queryClient = useQueryClient();
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -147,8 +150,9 @@ export const useColumnOptions = (): ColumnDef<CourseTableType>[] => {
             <DropdownMenuContent align="end">
               <DropdownMenuItem
                 asChild
-                onClick={() => {
-                  console.log('id >>>', row.getValue('id'));
+                onClick={async () => {
+                  await DestroyCourseByInstructor(row.getValue('id'));
+                  refetch();
                 }}
               >
                 <span>

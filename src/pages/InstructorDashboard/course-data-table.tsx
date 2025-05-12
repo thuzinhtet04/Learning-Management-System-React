@@ -38,46 +38,90 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { courses } from '../studentCourse/types';
+import { Course, CourseResponse } from '../studentCourse/types';
 import { CourseTableType } from './types';
 import { useMemo, useState } from 'react';
 import { useColumnOptions } from './columns';
 import { formatPrice } from '@/utils';
 import { Link } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  useQuery,
+} from '@tanstack/react-query';
+import { useDebounce } from '@uidotdev/usehooks';
+import { af } from 'date-fns/locale';
+import { fetchCourseByInstructor } from '@/services';
+import { useAuthStore } from '@/store/authStore';
 
 type Props = {
-  courses: courses[];
+  courses: CourseResponse;
+  setPageIndex: React.Dispatch<React.SetStateAction<string>>;
+  refetch: (
+    options?: RefetchOptions
+  ) => Promise<QueryObserverResult<any, Error>>;
 };
 
-export default function CourseDataTable({ courses }: Props) {
+export default function CourseDataTable({
+  courses,
+  setPageIndex,
+  refetch,
+}: Props) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  const [search, setSearch] = useState('');
+  console.log(courses, 'courses');
+  const bounce = useDebounce(search, 200);
+  const { authUser } = useAuthStore();
 
-  const data: CourseTableType[] = useMemo(
-    () =>
-      courses.map((data) => ({
+  const {
+    data: searchCourses,
+    isError,
+    isLoading,
+  } = useQuery({
+    queryKey: ['allCourses', 'instructor', authUser?.data.username, bounce],
+    queryFn: () =>
+      fetchCourseByInstructor(
+        '/courses?instructor=' + authUser?.data.username,
+        '&search=' + bounce
+      ),
+    staleTime: 60 * 1000,
+  });
+
+  const data = useMemo(() => {
+    if (search && searchCourses) {
+      return searchCourses?.data.map((data) => ({
         id: data.id,
-        categoryName: data.categoryName,
-        courseName: data.courseName,
-        currentPrice: data.currentPrice,
-        totalIncome: data.currentPrice * data.studentCount,
-        studentCount: data.studentCount,
-      })),
-    [courses]
-  );
+        categoryName: data.course_name,
+        courseName: data.course_name,
+        currentPrice: parseFloat(data.current_price),
+        totalIncome: parseFloat(data.current_price) * data.students.length,
+        studentCount: data.students.length,
+      }));
+    }
+    return courses?.data.map((data) => ({
+      id: data.id,
+      categoryName: data.course_name,
+      courseName: data.course_name,
+      currentPrice: parseFloat(data.current_price),
+      totalIncome: parseFloat(data.current_price) * data.students.length,
+      studentCount: data.students.length,
+    }));
+  }, [courses, searchCourses]);
 
   const totalIncome = data.reduce((prev, cur) => prev + cur.totalIncome, 0);
 
-  const columns = useColumnOptions();
+  const columns = useColumnOptions(refetch);
 
   const table = useReactTable({
     data,
     columns,
+    manualPagination: true,
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
+    // onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -90,6 +134,7 @@ export default function CourseDataTable({ courses }: Props) {
       columnVisibility,
       rowSelection,
     },
+    pageCount: courses?.last_page ?? -1,
   });
 
   return (
@@ -97,12 +142,8 @@ export default function CourseDataTable({ courses }: Props) {
       <div className="flex items-center py-4 gap-2">
         <Input
           placeholder="Search Course..."
-          value={
-            (table.getColumn('courseName')?.getFilterValue() as string) ?? ''
-          }
-          onChange={(event) =>
-            table.getColumn('courseName')?.setFilterValue(event.target.value)
-          }
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           className="max-w-sm"
         />
 
@@ -187,23 +228,27 @@ export default function CourseDataTable({ courses }: Props) {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 font-medium">
-          Total Income: {formatPrice(totalIncome)}
+        <div className="flex-1 font-medium text-green-500 ">
+          Total Income :{' '}
+          <span className=" text-white">{formatPrice(totalIncome)}</span>
         </div>
         <div className="space-x-2">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => setPageIndex(courses.next_page_url ?? '')}
+            disabled={courses.current_page === 1}
           >
             Previous
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={() => setPageIndex(courses.prev_page_url ?? '')}
+            disabled={
+              courses.current_page === courses.last_page ||
+              courses.current_page < courses.last_page
+            }
           >
             Next
           </Button>

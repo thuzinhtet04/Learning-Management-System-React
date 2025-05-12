@@ -1,3 +1,4 @@
 ✅need to make student dashboard for category filter course 
 
-need to set profile page
+
+need to develop create course , thumbnail error , not file errrpr

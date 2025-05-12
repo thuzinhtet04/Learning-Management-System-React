@@ -8,13 +8,14 @@ import {
 import { newCourseFormType } from '../useNewCourseForm';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useState } from 'react';
 
 type Props = {
   form: newCourseFormType;
 };
 
 export default function CourseThumbnailForm({ form }: Props) {
-  // const [profilePic, setProfilePic] = useState('');
+  const [profilePic, setProfilePic] = useState('');
 
   return (
     <FormField
@@ -26,10 +27,15 @@ export default function CourseThumbnailForm({ form }: Props) {
             <FormLabel>Course Profile Photo</FormLabel>
             <FormControl>
               <Input
-                {...field}
+                type="file"
                 onChange={(e) => {
                   field.onChange(e);
-                  // setProfilePic(e.target.value);
+
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const url = URL.createObjectURL(file);
+                    setProfilePic(url as string);
+                  }
                 }}
                 placeholder="course photo"
               />
@@ -38,8 +44,8 @@ export default function CourseThumbnailForm({ form }: Props) {
           <div className="w-2">
             {!!field.value && (
               <Avatar>
-                <AvatarImage src={field.value} alt="@shadcn" />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarImage src={profilePic} alt="@shadcn" />
+                <AvatarFallback>{profilePic}</AvatarFallback>
               </Avatar>
             )}
           </div>

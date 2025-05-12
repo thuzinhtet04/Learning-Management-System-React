@@ -34,8 +34,8 @@ export default function CourseTypeForm({ form }: Props) {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="Live">Live</SelectItem>
-                <SelectItem value="Video">Video</SelectItem>
+                <SelectItem value="free">Free</SelectItem>
+                <SelectItem value="paid">Paid</SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />

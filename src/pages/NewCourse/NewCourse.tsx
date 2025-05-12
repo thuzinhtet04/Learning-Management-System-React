@@ -15,32 +15,33 @@ import CourseThumbnailForm from './components/course-thumbnail-form';
 import CourseAvailableForm from './components/course-available-form';
 import { useLocation } from 'react-router-dom';
 import CourseLessonForm from './components/course-lesson-form';
+import { useCategories } from '@/store/useCategories';
+import { CategoryInterface } from '../studentCourse/types';
 
-const categories = [
-  { label: 'Web Development', value: 1 },
-  { label: 'Mobile Development', value: 2 },
-  { label: 'Data Science', value: 3 },
-  { label: 'Cloud Computing', value: 4 },
-];
+// const categories = [
+//   { label: 'Web Development', value: 1 },
+//   { label: 'Mobile Development', value: 2 },
+//   { label: 'Data Science', value: 3 },
+//   { label: 'Cloud Computing', value: 4 },
+// ];
 
 export default function NewCourse() {
   const [categoryId, setCategoryId] = useState(0);
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState<CategoryInterface | null>();
   const { state } = useLocation();
   const courseId = state?.courseId as number | undefined;
 
   // console.log('courseId >>>', courseId ?? 'not exist');
 
   useEffect(() => {
-    const id = categories.find((check) => check.label === category)?.value;
-
-    setCategoryId(id ?? 0);
+    // const id = categories?.find((check) => check.label === category)?.value;
+    // setCategoryId(id ?? 0);
   }, [category]);
 
   const form = useNewCourseForm(courseId);
 
-  function onSubmit(values: z.infer<typeof newCourseFormSchema>) {
-    console.log({ ...values, categoryId, categoryName: category });
+  function onSubmit(data: z.infer<typeof newCourseFormSchema>) {
+    console.log({ ...data, categoryId, categoryName: category?.name });
   }
 
   return (
@@ -56,7 +57,7 @@ export default function NewCourse() {
               <CourseCategoryForm
                 form={form}
                 onCategory={setCategory}
-                category={category}
+                category={category!}
               />
             </div>
 
