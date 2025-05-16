@@ -1,4 +1,4 @@
-import { fetchCourseByInstructor, getAllCourses } from '@/services';
+import { fetchCourseByInstructor } from '@/services';
 import { useQuery } from '@tanstack/react-query';
 import CourseDataTable from './course-data-table';
 import { useAuthStore } from '@/store/authStore';
@@ -9,7 +9,7 @@ import { fetchCategories } from '@/features/authentication/service/services';
 
 const InstructorDashboard = () => {
   const { authUser } = useAuthStore();
-  const [pageIndex, setPageIndex] = useState(1);
+  // const [pageIndex, setPageIndex] = useState(1);
   const [url, setUrl] = useState(
     '/courses?instructor=' + authUser?.data.username
   );

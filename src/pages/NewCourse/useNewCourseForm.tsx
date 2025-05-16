@@ -10,21 +10,22 @@ const lessonSchema = z.object({
 });
 
 export const newCourseFormSchema = z.object({
-  course_name: z.string().min(2, {
-    message: 'courseName must be at least 2 characters.',
-  }),
+  course_name: z.string(),
+  // min(2, {
+  //   message: 'courseName must be at least 2 characters.',
+  // }),
   category_id: z.number({ required_error: 'Category Name is required' }),
   category_name: z.string(),
   type: z.string({ required_error: 'type is required' }),
   level: z.string({ required_error: 'level is required' }),
   description: z.string({ required_error: 'description is required' }),
   duration: z.coerce.string({ required_error: 'duration is required' }),
-  original_price: z.coerce.number().gte(1000).positive(),
-  current_price: z.coerce.number().gte(1000).positive(),
+  original_price: z.coerce.number().positive(),
+  current_price: z.coerce.number().positive(),
   // available: z.boolean().default(),
   thumbnail: z
     .instanceof(File)
-    .refine((file) => file.size <=  5 * 1024 * 1024 , 'File size is too large.'),
+    // .refine((file) => file.size <=  5 * 1024 * 1024 , 'File size is too large.'),
   // lessons: z.array(lessonSchema),
 });
 
@@ -44,7 +45,7 @@ export default function useNewCourseForm(
       type: 'free',
       level: 'beginner',
       description: '',
-      thumbnail: undefined,
+      thumbnail:  undefined,
       duration: '1 hours',
       original_price: 0,
       current_price: 0,

@@ -12,7 +12,6 @@ import { Check, ChevronsUpDown, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -78,7 +77,7 @@ export default function CourseCategoryForm({
   //   form?.getValues('categoryName')
   // );
   const { categories } = useCategories();
-  console.log(categories, 'cate4dfasl');
+  // console.log(categories, 'cate4dfasl');
 
   return (
     <FormField

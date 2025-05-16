@@ -39,6 +39,8 @@ export const RegisterUserFn = async (data: FormData) => {
             password: data.password,
             password_confirmation: data.confirmPassword,
             role: data.role,
+            nrc : "fake nrc",
+            edu_background : "degree"
           }),
           credentials : "include"
         }

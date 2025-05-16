@@ -15,7 +15,7 @@ type Props = {
 };
 
 export default function CourseThumbnailForm({ form }: Props) {
-  const [profilePic, setProfilePic] = useState('');
+  const [profilePic , setProfilePic] = useState('');
 
   return (
     <FormField
@@ -29,15 +29,30 @@ export default function CourseThumbnailForm({ form }: Props) {
               <Input
                 type="file"
                 onChange={(e) => {
-                  field.onChange(e);
-
                   const file = e.target.files?.[0];
-                  if (file) {
-                    const url = URL.createObjectURL(file);
-                    setProfilePic(url as string);
-                  }
+                  field.onChange(file); // pass the File object to react-hook-form
+                    
+                    if (file) {
+                      const url = URL.createObjectURL(file);
+                      setProfilePic(url as string);
+                    }
+                  // if (file) {
+                  //   const url = URL.createObjectURL(file);
+                  //   setProfilePic(url); // or however you handle previews
+                  // }
                 }}
+                // onChange={(e) => {
+                //   field.onChange(e);
+
+                //   const file = e.target.files?.[0];
+                //   if (file) {
+                //     const url = URL.createObjectURL(file);
+                //     setProfilePic(url as string);
+                //   }
+                // }}
                 placeholder="course photo"
+                name={field.name}
+                ref={field.ref}
               />
             </FormControl>
           </div>

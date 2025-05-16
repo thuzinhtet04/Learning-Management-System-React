@@ -16,7 +16,7 @@ export default function CourseNameForm({ form }: Props) {
   return (
     <FormField
       control={form.control}
-      name="courseName"
+      name="course_name"
       render={({ field }) => (
         <FormItem>
           <FormLabel>Course Name</FormLabel>

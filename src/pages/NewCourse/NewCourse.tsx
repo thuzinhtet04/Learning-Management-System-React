@@ -13,10 +13,12 @@ import CourseOriginalPriceForm from './components/course-original-price-form';
 import CourseCurrentPriceForm from './components/course-current-price-form';
 import CourseThumbnailForm from './components/course-thumbnail-form';
 import CourseAvailableForm from './components/course-available-form';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import CourseLessonForm from './components/course-lesson-form';
-import { useCategories } from '@/store/useCategories';
 import { CategoryInterface } from '../studentCourse/types';
+import { useMutation } from '@tanstack/react-query';
+import { createCourse } from '@/features/authentication/service/services';
+import { useAuthStore } from '@/store/authStore';
 
 // const categories = [
 //   { label: 'Web Development', value: 1 },
@@ -24,14 +26,15 @@ import { CategoryInterface } from '../studentCourse/types';
 //   { label: 'Data Science', value: 3 },
 //   { label: 'Cloud Computing', value: 4 },
 // ];
+export type createCourseData = z.infer<typeof newCourseFormSchema>;
 
 export default function NewCourse() {
-  const [categoryId, setCategoryId] = useState(0);
+  // const [categoryId, setCategoryId] = useState(0);
   const [category, setCategory] = useState<CategoryInterface | null>();
   const { state } = useLocation();
   const courseId = state?.courseId as number | undefined;
-
-  // console.log('courseId >>>', courseId ?? 'not exist');
+  const [is_available, setIsAvailable] = useState<boolean>(true);
+  const { authUser } = useAuthStore();
 
   useEffect(() => {
     // const id = categories?.find((check) => check.label === category)?.value;
@@ -40,9 +43,41 @@ export default function NewCourse() {
 
   const form = useNewCourseForm(courseId);
 
-  function onSubmit(data: z.infer<typeof newCourseFormSchema>) {
-    console.log({ ...data, categoryId, categoryName: category?.name });
-  }
+  const { mutate, isPending } = useMutation({
+    mutationFn: createCourse,
+    mutationKey: ['create', 'course'],
+    onSuccess: (data) => {
+      console.log(data, 'response Data');
+    },
+  });
+
+  const onSubmit = async (data: createCourseData) => {
+    // console.log(
+    //   { ...data, categoryId, categoryName: category?.name },
+    //   'course DAta'
+    // );
+    const formData = new FormData();
+
+    formData.append('course_name', data.course_name);
+    formData.append('category_id', String(data.category_id));
+    formData.append('type', data.type);
+    formData.append('level', data.level);
+    formData.append('description', data.description);
+    formData.append('duration', data.duration);
+    formData.append('original_price', String(data.original_price));
+    formData.append('current_price', String(data.current_price));
+    // min(2, {
+    //   message: 'courseName must be at least 2 characters.',
+    // }),
+
+    if (data.thumbnail && data.thumbnail instanceof File) {
+      formData.append('thumbnail', data.thumbnail);
+    }
+    mutate(formData);
+  };
+  console.log(form.formState.errors, 'error');
+
+  if (authUser?.data.roleName !== 'instructor') return <Navigate to="/" />; // console.log('courseId >>>', courseId ?? 'not exist');
 
   return (
     <div>
@@ -96,9 +131,14 @@ export default function NewCourse() {
 
           <div className="flex items-center gap-1">
             {/* available */}
-            <CourseAvailableForm form={form} />
+            <CourseAvailableForm
+              is_available={is_available}
+              setIsAvailable={setIsAvailable}
+            />
 
-            <Button type="submit">Submit</Button>
+            <Button disabled={isPending} type="submit">
+              {isPending ? 'Loading...0' : 'Submit'}
+            </Button>
           </div>
         </form>
       </Form>

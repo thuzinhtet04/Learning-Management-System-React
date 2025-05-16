@@ -16,7 +16,7 @@ export default function CourseCurrentPriceForm({ form }: Props) {
   return (
     <FormField
       control={form.control}
-      name="currentPrice"
+      name="current_price"
       render={({ field }) => (
         <FormItem>
           <FormLabel>Current Price</FormLabel>

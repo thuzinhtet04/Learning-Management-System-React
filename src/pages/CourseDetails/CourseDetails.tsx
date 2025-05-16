@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { courseDetails, InstructorUser, users } from '../studentCourse/types';
 import { API_BASE_URL } from '@/config/serverApiConfig';
 import { CourseDetailsResponse, UserResponse } from './types';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 
 import CourseTabs from './course-tabs';
 import InstructorInfoCard from './instructor-info-card';
@@ -15,28 +15,25 @@ import { getCourseById } from '@/features/authentication/service/services';
 
 export default function CourseDetails() {
   const { courseId } = useParams();
-
   const [courseData, setCourseData] = useState<courseDetails>();
   const [instructor, setInstructor] = useState<InstructorUser>();
-
+  
   const { data, isLoading } = useQuery({
     queryKey: ['courses', 'noAuth'],
     queryFn: () => getCourseById(courseId!),
   });
-
+  
   useEffect(() => {
     console.log('detiala');
     setCourseData(data?.data);
     setInstructor(data?.data?.instructor_user!);
   }, [data, isLoading]);
-
-
+  
   if (isLoading) return <p>Loading ...</p>;
-
-
+  
+  if (typeof courseId !== 'number') return <Navigate to="/" />;
   return (
     <div className="container mx-auto px-4 py-8">
-      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Course Main Content - Left Side (2/3 width on large screens) */}
         <div className="lg:col-span-2 space-y-8">

@@ -3,7 +3,6 @@ import StudentDashboard from '../StudentDashboard/StudentDashboard';
 import InstructorDashboard from '../InstructorDashboard/InstructorDashboard';
 import AdminDashboard from '../AdminDashboard/AdminDashboard';
 import { useAuthStore } from '@/store/authStore';
-import { Navigate } from 'react-router-dom';
 import NoAuthDashboard from '../NoAuthDashboard/NoAuthDashboard';
 
 type UserRole = 'student' | 'admin' | 'instructor';

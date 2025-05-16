@@ -14,14 +14,14 @@ import {
   Mail,
   Loader2,
   User,
+  GraduationCap,
+  IdCard,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useMutation } from '@tanstack/react-query';
 import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Label } from '@radix-ui/react-label';
-import { RadioGroup } from '@radix-ui/react-dropdown-menu';
-import { API_BASE_URL } from '@/config/serverApiConfig';
+
 import { RegisterUserFn } from '@/features/authentication/service/authApi';
 
 const registerSchema = z
@@ -36,19 +36,42 @@ const registerSchema = z
         message: 'Please select a role',
         path: ['role'],
       }),
+    nrc: z.string().min(6, 'NRC must be at least 6 number').optional(),
+    edu_background: z
+      .string()
+      .min(5, 'Education Background must be at least 5 character long')
+      .optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ['confirmPassword'],
+  })
+  .superRefine((data, ctx) => {
+    if (data.role === 'instructor') {
+      if (!data.nrc) {
+        ctx.addIssue({
+          path: ['nrc'],
+          code: z.ZodIssueCode.custom,
+          message: 'NRC is required when role is instructor ',
+        });
+      }
+      if (!data.edu_background) {
+        ctx.addIssue({
+          path: ['edu_background'],
+          code: z.ZodIssueCode.custom,
+          message: 'Education Background is required when role is instructor ',
+        });
+      }
+    }
   });
+export type FormData = z.infer<typeof registerSchema>;
 
-export   type FormData = z.infer<typeof registerSchema>;
- 
 const Register = () => {
   const { theme } = useTheme();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [role, setRole] = useState('student');
 
   const {
     register,
@@ -59,7 +82,6 @@ const Register = () => {
   });
 
   const { mutate: registerUser, isPending } = useMutation({
-
     mutationFn: RegisterUserFn,
     onSuccess: () => {
       toast.success('Registration successful! Please login.');
@@ -71,7 +93,8 @@ const Register = () => {
   });
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    console.log(data)
+    console.log(data);
+
     registerUser(data);
   };
 
@@ -226,46 +249,110 @@ const Register = () => {
                   </p>
                 )}
               </div>
-              {/* Role Choosing */}
-              <div className="flex items-center mb-4">
-                <input
-                  id="role-student"
-                  type="radio"
-              
-                  value="student"
-                  {...register("role")}
-                  className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
-                  checked
-                />
-                <label
-                  htmlFor="role-student"
-                  className="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300"
-                >
-                  Student
-                </label>
-              </div>{' '}
-              <div className="flex items-center mb-4">
-                <input
-                  id="instructor"
-                  type="radio"
-                  required
-                  {...register("role")}
-              
-                  value="instructor"
-                  className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
-                />
-                <label
-                  htmlFor="instructor"
-                  className="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300"
-                >
-                  Instructor
-                </label>
-              </div>
-              {errors.role && (
-                <p className="text-sm mt-1 text-red-500">
-                  {errors.role.message}
-                </p>
+              {role === 'instructor' && (
+                <>
+                  <div>
+                    <label htmlFor="password" className="text-sm text-gray-400">
+                      NRC number
+                    </label>
+                    <div className="relative">
+                      <label htmlFor=""></label>
+                      <Input
+                        type="text"
+                        placeholder="Enter your nrc"
+                        className="mt-1 h-10 ps-12 text-sm"
+                        {...register('nrc')}
+                      />
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        <IdCard className="w-5" />
+                      </span>
+                    </div>
+                  </div>
+                  {errors.nrc && (
+                    <p className="text-sm mt-1 text-red-500">
+                      {errors.nrc.message}
+                    </p>
+                  )}
+                  <div>
+                    <label htmlFor="password" className="text-sm text-gray-400">
+                      Education Background
+                    </label>
+                    <div className="relative">
+                      <Input
+                        type="text"
+                        placeholder="Enter your nrc"
+                        className="mt-1 h-10 ps-12 text-sm"
+                        {...register('edu_background')}
+                      />
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        <GraduationCap className="w-5" />
+                      </span>
+                    </div>
+                  </div>
+                  {errors.edu_background && (
+                    <p className="text-sm mt-1 text-red-500">
+                      {errors.edu_background.message}
+                    </p>
+                  )}
+                </>
               )}
+              {/* Role Choosing */}
+              <div className="flex gap-5">
+                <div className="flex items-center mb-4">
+                  <div
+                    onClick={() => {
+                      setRole('student');
+                    }}
+                    className="w-4 h-4"
+                  >
+                    <input
+                      id="role-student"
+                      type="radio"
+                      value="student"
+                      checked={role === 'student'}
+                      onClick={() => {
+                        setRole('instructor');
+                      }}
+                      {...register('role')}
+                      className="w-4 h-4 border-gray-300  dark:bg-gray-700 dark:border-gray-600"
+                    />
+                  </div>
+                  <label
+                    htmlFor="role-student"
+                    className="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300"
+                  >
+                    Student
+                  </label>
+                </div>{' '}
+                <div className="flex items-center mb-4 ">
+                  <div className="w-4 h-4">
+                    <input
+                      id="instructor"
+                      type="radio"
+                      required
+                      checked={role === 'instructor'}
+                      onClick={() => {
+                        setRole('instructor');
+                      }}
+                      {...register('role')}
+                      value="instructor"
+                      className="w-4 h-4 border-gray-300  dark:bg-gray-700 dark:border-gray-600"
+                    />
+                  </div>
+                  <label
+                    htmlFor="instructor"
+                    className="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300"
+                  >
+                    Instructor
+                  </label>
+                </div>
+                {errors.role && (
+                  <p className="text-sm mt-1 text-red-500">
+                    {errors.role.message}
+                  </p>
+                )}
+              </div>
+
               <Button
                 type="submit"
                 className="w-full h-10 mt-4 bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white"

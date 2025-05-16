@@ -33,9 +33,9 @@ export default function CourseLevelForm({ form }: Props) {
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              <SelectItem value="Beginner">Beginner</SelectItem>
-              <SelectItem value="Intermediate">Intermediate</SelectItem>
-              <SelectItem value="Advanced">Advanced</SelectItem>
+              <SelectItem value="beginner">Beginner</SelectItem>
+              <SelectItem value="intermediate">Intermediate</SelectItem>
+              <SelectItem value="advance">Advanced</SelectItem>
             </SelectContent>
           </Select>
           <FormMessage />

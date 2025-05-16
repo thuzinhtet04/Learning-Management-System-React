@@ -22,7 +22,6 @@ import Dashboard from '@/pages/Dashboard/Dashboard';
 import StudentProfile from '@/pages/profile/studentProfile';
 
 export default function Admin() {
-  const { authUser } = useAuthStore();
 
   return useRoutes([
     {

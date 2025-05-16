@@ -18,9 +18,9 @@ export default function CourseDurationForm({ form }: Props) {
       control={form.control}
       name="duration"
       render={({ field }) => (
-        <FormItem>
-          <FormLabel>Course Duration</FormLabel>
-          <FormControl>
+        <FormItem className=''>
+          <FormLabel>Course Duration(Hours)</FormLabel>
+          <FormControl className=''>
             <Input type="number" placeholder="2 hours" {...field} />
           </FormControl>
           <FormMessage />

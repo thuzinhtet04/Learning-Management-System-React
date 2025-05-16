@@ -1,6 +1,8 @@
 import { CategoryInterface, users } from '@/pages/studentCourse/types';
 import API from './api';
 import { CourseDetailsResponse } from '@/pages/CourseDetails/types';
+import { newCourseFormSchema } from '@/pages/NewCourse/useNewCourseForm';
+import { createCourseData } from '@/pages/NewCourse/NewCourse';
 
 export const fetchCategories = async (): Promise<CategoryInterface[]> => {
   try {
@@ -26,6 +28,12 @@ export const updateProfile = async (
   const data = await res.data;
   console.log(data, 'profile');
   return data.data;
+};
+
+export const createCourse = async (courseData: FormData) => {
+  const res = await API.post('/courses', courseData);
+  const data = await res.data;
+  return data;
 };
 
 export const getCourseById = async (courseId: string) => {
