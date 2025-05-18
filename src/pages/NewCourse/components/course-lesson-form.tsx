@@ -1,103 +1,157 @@
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { newCourseFormType } from '../useNewCourseForm';
+// import { newCourseFormType } from '../useNewCourseForm';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { useFieldArray } from 'react-hook-form';
+import { useForm, UseFormReturn } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Checkbox } from '@radix-ui/react-checkbox';
+import {  useQuery } from '@tanstack/react-query';
+import { getCourseById } from '@/features/authentication/service/services';
 
-type Props = {
-  form: newCourseFormType;
-};
+export const newLessonFormSchema = z.object({
+  course_id: z.string(),
+  title: z
+    .string()
+    .min(5, { message: 'lesson title must be at least 5 character long' }),
+  lesson_detail: z
+    .string()
+    .min(10, { message: 'lesson details must be at least 5 character long' }),
+  is_available: z.boolean().default(true),
+  video_url: z
+    .string()
+    .min(5, { message: 'lesson video url must be at least 5 character long' })
+    .startsWith('https://', 'please enter valid video url link'),
+  // lessons: z.array(lessonSchema),
+});
 
-export default function CourseLessonForm({ form }: Props) {
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: 'lessons',
+export type NewCourseFormData = UseFormReturn<
+  z.infer<typeof newLessonFormSchema>
+>;
+
+export default function CourseLessonForm() {
+  const { courseId } = useParams();
+
+  const [lessons, setLessons] = useState([
+    {
+      lessonIndex: 1,
+      courseId: courseId!,
+      title: '',
+      lesson_detail: '',
+      video_url: '',
+      is_available: true,
+    },
+  ]);
+  const { data } = useQuery({
+    queryKey: [courseId, 'show'] , 
+    queryFn : () => {
+      getCourseById(courseId!)
+    }
   });
 
+  const form = useForm({
+    resolver: zodResolver(newLessonFormSchema),
+    defaultValues: {
+      course_id: courseId!,
+      title: '',
+      lesson_detail: '',
+      is_available: true,
+      video_url: '',
+    },
+  });
+  const onSubmit = (data) => {
+    console.log(data, 'lesson form data');
+  };
+
+  console.log(data);
   return (
     <div className="space-y-4">
-      {fields.map((field, index) => (
-        <div
-          key={field.id}
-          className="border border-gray-600 p-4 rounded-lg space-y-2"
-        >
-          <FormField
-            control={form.control}
-            name={`lessons.${index}.title`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Lesson Title {index + 1}</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter lesson title" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <div className="border border-gray-600 p-4 rounded-lg space-y-2">
+            <h2>Create Lesson for {courseId}</h2>
+            <FormField
+              control={form.control}
+              name={`title`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Lesson Title </FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter lesson title" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name={`lessons.${index}.videoUrl`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Video URL</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter video URL" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name={`lessons.${index}.lessonDetail`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Lesson Details</FormLabel>
-                <FormControl>
-                  <Textarea
+            <FormField
+              control={form.control}
+              name={`lesson_detail`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Lesson Details</FormLabel>
+                  <FormControl>
+                    <Textarea
                     placeholder="Enter lesson details"
-                    className="resize-none"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                      className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Button
-            type="button"
-            variant="destructive"
-            onClick={() => remove(index)}
-            className="mt-2"
-          >
-            Remove Lesson
-          </Button>
-        </div>
-      ))}
+            <FormField
+              control={form.control}
+              name={`video_url`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Video Url</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter video URL" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-      <Button
+            <FormField
+              control={form.control}
+              name={`is_available`}
+              render={({ field }) => (
+                <FormItem className="flex items-end gap-1 mb-2">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+
+                  <FormLabel>Available</FormLabel>
+                </FormItem>
+              )}
+            />
+
+            <Button>Submit</Button>
+          </div>
+        </form>
+      </Form>
+      {/* <Button
         type="button"
-        onClick={() =>
-          append({
-            title: '',
-            videoUrl: '',
-            lessonDetail: '',
-            available: true,
-          })
-        }
       >
         Add New Lesson
-      </Button>
+      </Button> */}
     </div>
   );
 }

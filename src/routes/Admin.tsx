@@ -20,9 +20,9 @@ import CourseRoute from './Course.route';
 import VideoPlayer from '@/pages/StudentCourseDetails/components/VideoPlayer';
 import Dashboard from '@/pages/Dashboard/Dashboard';
 import StudentProfile from '@/pages/profile/studentProfile';
+import CreateLessons from '@/pages/NewCourse/components/CreateLessons';
 
 export default function Admin() {
-
   return useRoutes([
     {
       path: '/',
@@ -44,6 +44,10 @@ export default function Admin() {
         {
           path: 'courses/new',
           element: <NewCourse />,
+        },
+        {
+          path: 'courses/:courseId/lessons/new',
+          element: <CreateLessons />,
         },
         {
           path: 'courses/:courseId',

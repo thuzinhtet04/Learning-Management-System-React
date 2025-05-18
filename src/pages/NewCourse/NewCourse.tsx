@@ -19,6 +19,8 @@ import { CategoryInterface } from '../studentCourse/types';
 import { useMutation } from '@tanstack/react-query';
 import { createCourse } from '@/features/authentication/service/services';
 import { useAuthStore } from '@/store/authStore';
+import API from '@/features/authentication/service/api';
+import { toast } from 'sonner';
 
 // const categories = [
 //   { label: 'Web Development', value: 1 },
@@ -46,8 +48,13 @@ export default function NewCourse() {
   const { mutate, isPending } = useMutation({
     mutationFn: createCourse,
     mutationKey: ['create', 'course'],
-    onSuccess: (data) => {
-      console.log(data, 'response Data');
+    onSuccess: async (courseData) => {
+      if (is_available) {
+        //make route for courses that is enrolled
+        const res = await API.post(`/courses/${courseData.id}/request`);
+        const message = await res.data.message;
+        toast(message);
+      }
     },
   });
 
@@ -110,7 +117,7 @@ export default function NewCourse() {
           <CourseDescriptionForm form={form} />
 
           {/* lessons */}
-          <CourseLessonForm form={form} />
+          {/* <CourseLessonForm  /> */}
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 items-center">
             {/* duration */}

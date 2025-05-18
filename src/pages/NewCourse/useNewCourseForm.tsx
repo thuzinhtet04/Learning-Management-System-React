@@ -2,12 +2,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 
-const lessonSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  videoUrl: z.string().min(1, 'Video Url is required'),
-  lessonDetail: z.string().min(1, 'Lesson Details is required'),
-  available: z.boolean().default(true),
-});
+// const lessonSchema = z.object({
+//   title: z.string().min(1, 'Title is required'),
+//   videoUrl: z.string().min(1, 'Video Url is required'),
+//   lessonDetail: z.string().min(1, 'Lesson Details is required'),
+//   available: z.boolean().default(true),
+// });
 
 export const newCourseFormSchema = z.object({
   course_name: z.string(),
@@ -34,7 +34,7 @@ export type NewCourseFormData = UseFormReturn<
 >;
 
 export default function useNewCourseForm(
-  courseId: number | undefined
+  // courseId: number | undefined
 ): NewCourseFormData {
   const form = useForm({
     resolver: zodResolver(newCourseFormSchema),

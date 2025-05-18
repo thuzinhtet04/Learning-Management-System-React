@@ -23,26 +23,30 @@ API.interceptors.response.use(
     if (error.response?.data?.message == 'TokenExpired') {
       const { refreshToken, login, logout } = useAuthStore.getState();
       if (!refreshToken) {
+        toast('Logout! Please login again');
+
         logout();
         return Promise.reject(error);
       }
 
       try {
         const res = await API.post(API_BASE_URL + '/auth/refresh');
-
         const { token, refresh_token } = res.data;
         console.log(token, refresh_token, 'refresh-process');
         toast('refresh token work');
-        alert('refresh tokein is working');
+        alert('refresh token is working');
         await login({ token, refreshToken: refresh_token });
 
         // Retry the failed request
         error.config.headers.Authorization = `Bearer ${token}`;
         return API(error.config);
       } catch (error) {
+        toast('Logout! Please login again');
         logout();
         return Promise.reject(error);
       }
+    } else {
+      toast(error.response?.data?.message);
     }
 
     return Promise.reject(error);

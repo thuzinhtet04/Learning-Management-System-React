@@ -33,7 +33,7 @@ export const updateProfile = async (
 export const createCourse = async (courseData: FormData) => {
   const res = await API.post('/courses', courseData);
   const data = await res.data;
-  return data;
+  return data.data;
 };
 
 export const getCourseById = async (courseId: string) => {

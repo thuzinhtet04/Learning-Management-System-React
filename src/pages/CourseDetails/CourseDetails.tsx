@@ -1,36 +1,36 @@
 import { useEffect, useState } from 'react';
-import { courseDetails, InstructorUser, users } from '../studentCourse/types';
-import { API_BASE_URL } from '@/config/serverApiConfig';
-import { CourseDetailsResponse, UserResponse } from './types';
+import { courseDetails, InstructorUser, lesson } from '../studentCourse/types';
+// import { API_BASE_URL } from '@/config/serverApiConfig';
+// import { CourseDetailsResponse, UserResponse } from './types';
 import { Navigate, useParams } from 'react-router-dom';
 
 import CourseTabs from './course-tabs';
 import InstructorInfoCard from './instructor-info-card';
-import CourseShareCard from './course-share-card';
+// import CourseShareCard from './course-share-card';
 import CoursePurchaseCard from './course-purchase-card';
 import CourseHeader from './course-header';
-import API from '@/features/authentication/service/api';
-import { useQueries, useQuery } from '@tanstack/react-query';
+// import API from '@/features/authentication/service/api';
+import { useQuery } from '@tanstack/react-query';
 import { getCourseById } from '@/features/authentication/service/services';
 
 export default function CourseDetails() {
   const { courseId } = useParams();
   const [courseData, setCourseData] = useState<courseDetails>();
   const [instructor, setInstructor] = useState<InstructorUser>();
-  
+
   const { data, isLoading } = useQuery({
     queryKey: ['courses', 'noAuth'],
     queryFn: () => getCourseById(courseId!),
   });
-  
+
   useEffect(() => {
     console.log('detiala');
     setCourseData(data?.data);
-    setInstructor(data?.data?.instructor_user!);
+    setInstructor(data?.data?.instructor_user);
   }, [data, isLoading]);
-  
+
   if (isLoading) return <p>Loading ...</p>;
-  
+
   if (typeof courseId !== 'number') return <Navigate to="/" />;
   return (
     <div className="container mx-auto px-4 py-8">
@@ -41,7 +41,10 @@ export default function CourseDetails() {
           <CourseHeader courseData={courseData!} />
 
           {/* Course Tabs */}
-          <CourseTabs courseData={courseData!} lessons={courseData?.lessons!} />
+          <CourseTabs
+            courseData={courseData!}
+            lessons={courseData?.lessons as lesson[]}
+          />
         </div>
 
         {/* Course Sidebar - Right Side (1/3 width on large screens) */}
