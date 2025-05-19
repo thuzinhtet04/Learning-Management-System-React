@@ -2,12 +2,10 @@
 
 import * as React from 'react';
 import {
-  BookOpenCheckIcon,
-  BookOpenIcon,
-  Component,
+ 
   Frame,
   GraduationCapIcon,
-  LayoutDashboard,
+ 
   Mail,
   Map,
   PieChart,
@@ -24,72 +22,187 @@ import {
   SidebarHeader,
 } from '@/components/ui/sidebar';
 import { TeamSwitcher } from './team-switcher';
-import { Link } from 'react-router-dom';
 import { useCategories } from '@/store/useCategories';
 import { MyCourses } from './MyCourses';
 import { AllCourseComponent } from './AllCoursesComponent';
 import { DashboardComponentSideBar } from './DashboardComponentSidebar';
+import { useAuthStore } from '@/store/authStore';
 
 // This is sample data.
 
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
- const data = {
-    teams: [
-      {
-        name: 'LMS Platform',
-        logo: GraduationCapIcon,
-        plan: 'Enterprise',
-      },
-    ],
-    navMain: [
-      {
-        title: 'My Courses',
-        component : MyCourses 
+
+  const { authUser } = useAuthStore()
+ const data =  React.useMemo(() => {
+  if(authUser?.data.roleName === "instructor"){
+    return {
+      teams: [
+        {
+          name: 'LMS Platform',
+          logo: GraduationCapIcon,
+          plan: 'Enterprise',
+        },
+      ],
+      navMain: [
+        {
+          title: 'My Courses',
+          component: MyCourses,
+        },
+        {
+          title: 'All Courses',
+          component: AllCourseComponent,
+        },
+        {
+          title: 'Lessons',
+          component: DashboardComponentSideBar,
+        },
+        {
+          title: 'Student',
+          component: DashboardComponentSideBar,
+        },
+      ],
+      buttons: [
+        {
+          title: 'About',
+          url: '#',
+          icon: GraduationCapIcon,
+        },
+        {
+          title: 'Contact Us',
+          url: '#',
+          icon: Mail,
+        },
+      ],
+      projects: [
+        {
+          name: 'Design Engineering',
+          url: '#',
+          icon: Frame,
+        },
+        {
+          name: 'Sales & Marketing',
+          url: '#',
+          icon: PieChart,
+        },
+        {
+          name: 'Travel',
+          url: '#',
+          icon: Map,
+        },
+      ],
+    }; 
+  }
+    return {
+      teams: [
+        {
+          name: 'LMS Platform',
+          logo: GraduationCapIcon,
+          plan: 'Enterprise',
+        },
+      ],
+      navMain: [
+        {
+          title: 'My Courses',
+          component: MyCourses,
+        },
+        {
+          title: 'All Courses',
+          component: AllCourseComponent,
+        },
+        {
+          title: 'Dashboards',
+          component: DashboardComponentSideBar,
+        },
+      ],
+      buttons: [
+        {
+          title: 'About',
+          url: '#',
+          icon: GraduationCapIcon,
+        },
+        {
+          title: 'Contact Us',
+          url: '#',
+          icon: Mail,
+        },
+      ],
+      projects: [
+        {
+          name: 'Design Engineering',
+          url: '#',
+          icon: Frame,
+        },
+        {
+          name: 'Sales & Marketing',
+          url: '#',
+          icon: PieChart,
+        },
+        {
+          name: 'Travel',
+          url: '#',
+          icon: Map,
+        },
+      ],
+    }; 
+  },[authUser])
+
+//  const data = {
+//     teams: [
+//       {
+//         name: 'LMS Platform',
+//         logo: GraduationCapIcon,
+//         plan: 'Enterprise',
+//       },
+//     ],
+//     navMain: [
+//       {
+//         title: 'My Courses',
+//         component : MyCourses 
       
-      },
-      {
-        title: 'All Courses',
-        component : AllCourseComponent 
+//       },
+//       {
+//         title: 'All Courses',
+//         component : AllCourseComponent 
     
-      },
-      {
-        title: 'Dashboards',
-        component : DashboardComponentSideBar 
+//       },
+//       {
+//         title: 'Dashboards',
+//         component : DashboardComponentSideBar 
   
-      },
-    ],
-    buttons: [
-      {
-        title: 'About',
-        url: '#',
-        icon: GraduationCapIcon,
-      },
-      {
-        title: 'Contact Us',
-        url: '#',
-        icon: Mail,
-      },
-    ],
-    projects: [
-      {
-        name: 'Design Engineering',
-        url: '#',
-        icon: Frame,
-      },
-      {
-        name: 'Sales & Marketing',
-        url: '#',
-        icon: PieChart,
-      },
-      {
-        name: 'Travel',
-        url: '#',
-        icon: Map,
-      },
-    ],
-  }  
-  const  { categories } = useCategories()
+//       },
+//     ],
+//     buttons: [
+//       {
+//         title: 'About',
+//         url: '#',
+//         icon: GraduationCapIcon,
+//       },
+//       {
+//         title: 'Contact Us',
+//         url: '#',
+//         icon: Mail,
+//       },
+//     ],
+//     projects: [
+//       {
+//         name: 'Design Engineering',
+//         url: '#',
+//         icon: Frame,
+//       },
+//       {
+//         name: 'Sales & Marketing',
+//         url: '#',
+//         icon: PieChart,
+//       },
+//       {
+//         name: 'Travel',
+//         url: '#',
+//         icon: Map,
+//       },
+//     ],
+//   }  
+  // const  { categories } = useCategories()
  
 
   return (

@@ -13,12 +13,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { newCourseFormType } from '../useNewCourseForm';
+import { level } from '@/pages/studentCourse/types';
 
 type Props = {
   form: newCourseFormType;
+  level?: level;
 };
 
-export default function CourseLevelForm({ form }: Props) {
+export default function CourseLevelForm({ form, level }: Props) {
   return (
     <FormField
       control={form.control}
@@ -26,7 +28,7 @@ export default function CourseLevelForm({ form }: Props) {
       render={({ field }) => (
         <FormItem>
           <FormLabel>Level</FormLabel>
-          <Select onValueChange={field.onChange} value={field.value}>
+          <Select onValueChange={field.onChange} value={field.value || level}>
             <FormControl>
               <SelectTrigger>
                 <SelectValue placeholder="Select Level" />

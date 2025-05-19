@@ -6,7 +6,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { newCourseFormType } from '../useNewCourseForm';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Check, ChevronsUpDown, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -25,6 +25,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useCategories } from '@/store/useCategories';
 import { CategoryInterface } from '@/pages/studentCourse/types';
+import { CourseDetailsResponse } from '@/pages/CourseDetails/types';
 
 type Props = {
   form: newCourseFormType;
@@ -32,6 +33,8 @@ type Props = {
   onCategory: React.Dispatch<
     React.SetStateAction<CategoryInterface | null | undefined>
   >;
+  categoryName?: string;
+  categoryId: number;
 };
 
 // const categories = [
@@ -45,13 +48,20 @@ export default function CourseCategoryForm({
   form,
   category,
   onCategory,
+  categoryName,
+  categoryId,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const categoryRef = useRef<HTMLInputElement | string>('');
+  const categoryRef = useRef<HTMLInputElement | null>(null);
+  const { categories } = useCategories();
+  useEffect(() => {
+    form.setValue('category_id', categoryId);
+    form.setValue('category_name', categoryName as string);
+  }, [categoryId, categoryName, form]);
 
   const handleSelect = (currentValue: string) => {
-    // console.log(currentValue , "currentValue")
+    console.log(currentValue, 'currentValue');
     const selectedOption = categories?.find(
       (option) => option.name === currentValue
     );
@@ -59,7 +69,7 @@ export default function CourseCategoryForm({
       console.log('this is selectedOption', selectedOption);
       onCategory(selectedOption);
 
-      // categoryRef.current.innerText = category?.name as string;
+      categoryRef.current!.value = selectedOption.name as string;
       form.setValue('category_id', selectedOption.id);
       form.setValue('category_name', selectedOption.name);
     }
@@ -71,13 +81,6 @@ export default function CourseCategoryForm({
     form.setValue('category_id', 0);
     form.setValue('category_name', '');
   };
-
-  // console.log(
-  //   'category name field >>>',
-  //   form?.getValues('categoryName')
-  // );
-  const { categories } = useCategories();
-  // console.log(categories, 'cate4dfasl');
 
   return (
     <FormField
@@ -94,6 +97,7 @@ export default function CourseCategoryForm({
                 {...field}
                 ref={categoryRef}
                 name="category_name"
+                value={field.value || categoryName}
                 // placeholder="category"
                 // value={field.value || ''}
                 // value={categoryName}

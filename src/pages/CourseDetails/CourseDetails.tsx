@@ -31,7 +31,7 @@ export default function CourseDetails() {
 
   if (isLoading) return <p>Loading ...</p>;
 
-  if (typeof courseId !== 'number') return <Navigate to="/" />;
+  if (!parseInt(courseId!)) return <Navigate to="/" />;
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

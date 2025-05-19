@@ -14,10 +14,13 @@ import CourseCurrentPriceForm from './components/course-current-price-form';
 import CourseThumbnailForm from './components/course-thumbnail-form';
 import CourseAvailableForm from './components/course-available-form';
 import { Navigate, useLocation } from 'react-router-dom';
-import CourseLessonForm from './components/course-lesson-form';
+// import CourseLessonForm from './components/course-lesson-form';
 import { CategoryInterface } from '../studentCourse/types';
-import { useMutation } from '@tanstack/react-query';
-import { createCourse } from '@/features/authentication/service/services';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  editCourse,
+  getCourseByIdNormal,
+} from '@/features/authentication/service/services';
 import { useAuthStore } from '@/store/authStore';
 import API from '@/features/authentication/service/api';
 import { toast } from 'sonner';
@@ -30,7 +33,7 @@ import { toast } from 'sonner';
 // ];
 export type createCourseData = z.infer<typeof newCourseFormSchema>;
 
-export default function NewCourse() {
+export default function EditCourse() {
   // const [categoryId, setCategoryId] = useState(0);
   const [category, setCategory] = useState<CategoryInterface | null>();
   const { state } = useLocation();
@@ -38,67 +41,90 @@ export default function NewCourse() {
   const [is_available, setIsAvailable] = useState<boolean>(true);
   const { authUser } = useAuthStore();
 
-  useEffect(() => {
-    // const id = categories?.find((check) => check.label === category)?.value;
-    // setCategoryId(id ?? 0);
-  }, [category]);
-
   const form = useNewCourseForm();
 
+  const { data: courseData } = useQuery({
+    queryKey: ['edit', 'course', courseId],
+    queryFn: () => {
+      return getCourseByIdNormal(`${courseId}`);
+    },
+  });
   const { mutate, isPending } = useMutation({
-    mutationFn: createCourse,
+    mutationFn: (data: FormData) => {
+    
+      return editCourse(courseId!, data);
+    },
     mutationKey: ['create', 'course'],
-    onSuccess: async (courseData) => {
+    onSuccess: async () => {
       if (is_available) {
+        if (courseData?.data.is_available) return;
         //make route for courses that is enrolled
-        const res = await API.post(`/courses/${courseData.id}/request`);
+        const res = await API.post(`/courses/${courseId}/request`);
         const message = await res.data.message;
         toast(message);
+      } else {
+        const res = await API.patch('/courses/unpublish/' + courseId, {
+          is_available: false,
+        });
+        await res.data;
+        if (res.status) toast('Unpublish your course successfully ');
       }
     },
   });
 
+  useEffect(() => {
+    setIsAvailable(courseData?.data.is_available as boolean);
+  }, [courseData]);
+
   const onSubmit = async (data: createCourseData) => {
-    // console.log(
-    //   { ...data, categoryId, categoryName: category?.name },
-    //   'course DAta'
-    // );
+    console.log('submit edit ', data);
     const formData = new FormData();
 
-    formData.append('course_name', data.course_name);
+    formData.append('course_name', data.course_name ?? courseData?.data.course_name);
     formData.append('category_id', String(data.category_id));
     formData.append('type', data.type);
     formData.append('level', data.level);
     formData.append('description', data.description);
-    formData.append('duration', data.duration);
+    formData.append('duration', `${data.duration}`);
     formData.append('original_price', String(data.original_price));
     formData.append('current_price', String(data.current_price));
     // min(2, {
     //   message: 'courseName must be at least 2 characters.',
     // }),
+    for(const [key , value] of formData.entries()){
+      console.log(key , value)
+    }
 
     if (data.thumbnail && data.thumbnail instanceof File) {
       formData.append('thumbnail', data.thumbnail);
     }
-    mutate(formData);
+
+    // mutate({...data , duration : "3" , original_price : "100" , current_price : "50"});
+    mutate(formData)
   };
+  const imagePlaceHolder =
+    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShpzLoP8w4TO5SHlH-boYRjN1Lth9K8QiHbQrDogf2MILT4rZ6E6Xvea1DegiYs81ld50&usqp=CAU';
   console.log(form.formState.errors, 'error');
 
   if (authUser?.data.roleName !== 'instructor') return <Navigate to="/" />; // console.log('courseId >>>', courseId ?? 'not exist');
 
+  // if(isLoading) return
   return (
     <div>
       {/* <Sample /> */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-          <CourseNameForm name='' form={form} />
+          <CourseNameForm
+            form={form}
+            name={courseData?.data.course_name ?? ''}
+          />
 
           <div className="grid grid-cols-2 md:grid-cols-3 items-end gap-1">
             {/* categoryName */}
             <div>
               <CourseCategoryForm
-              categoryId={0}
-              categoryName=''
+                categoryName={courseData?.data.category.name ?? ''}
+                categoryId={courseData?.data.category.id ?? 0}
                 form={form}
                 onCategory={setCategory}
                 category={category!}
@@ -107,34 +133,49 @@ export default function NewCourse() {
 
             <div>
               {/* type */}
-              <CourseTypeForm type='free' form={form} />
+              <CourseTypeForm form={form} type={courseData?.data.type ?? ''} />
             </div>
             <div>
               {/* level */}
-              <CourseLevelForm level='beginner' form={form} />
+              <CourseLevelForm
+                form={form}
+                level={courseData?.data.level ?? 'beginner'}
+              />
             </div>
           </div>
 
           {/* description */}
-          <CourseDescriptionForm description='' form={form} />
-
-          {/* lessons */}
-          {/* <CourseLessonForm  /> */}
+          <CourseDescriptionForm
+            form={form}
+            description={courseData?.data.description ?? ''}
+          />
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 items-center">
             {/* duration */}
-            <CourseDurationForm duration='' form={form} />
+            <CourseDurationForm
+              form={form}
+              duration={`${courseData?.data.duration}` || ''}
+            />
 
             {/* originalPrice */}
-            <CourseOriginalPriceForm orgPrice={0} form={form} />
+            <CourseOriginalPriceForm
+              form={form}
+              orgPrice={courseData?.data.original_price ?? 0}
+            />
 
             {/* currentPrice */}
-            <CourseCurrentPriceForm curPrice={0} form={form} />
+            <CourseCurrentPriceForm
+              form={form}
+              curPrice={courseData?.data.current_price ?? 0}
+            />
           </div>
           <div className="grid grid-cols-8 items-end">
             {/* thumbnail */}
             <div className="col-span-7">
-              <CourseThumbnailForm src='' form={form} />
+              <CourseThumbnailForm
+                form={form}
+                src={courseData?.data.thumbnail ? imagePlaceHolder : ''}
+              />
             </div>
           </div>
 

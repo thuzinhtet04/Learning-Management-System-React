@@ -161,7 +161,7 @@ export const useColumnOptions = (refetch): ColumnDef<CourseTableType>[] => {
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
-                  to={'/courses/new'}
+                  to={'/courses/edit'}
                   state={{ courseId: row.getValue('id') }}
                 >
                   <Pencil /> Edit

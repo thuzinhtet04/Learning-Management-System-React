@@ -7,15 +7,15 @@ import {
 } from '@/components/ui/form';
 import { newCourseFormType } from '../useNewCourseForm';
 import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useState } from 'react';
 
 type Props = {
   form: newCourseFormType;
+  src?: string;
 };
 
-export default function CourseThumbnailForm({ form }: Props) {
-  const [profilePic , setProfilePic] = useState('');
+export default function CourseThumbnailForm({ form, src }: Props) {
+  const [profilePic, setProfilePic] = useState('');
 
   return (
     <FormField
@@ -31,11 +31,11 @@ export default function CourseThumbnailForm({ form }: Props) {
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   field.onChange(file); // pass the File object to react-hook-form
-                    
-                    if (file) {
-                      const url = URL.createObjectURL(file);
-                      setProfilePic(url as string);
-                    }
+
+                  if (file) {
+                    const url = URL.createObjectURL(file);
+                    setProfilePic(url as string);
+                  }
                   // if (file) {
                   //   const url = URL.createObjectURL(file);
                   //   setProfilePic(url); // or however you handle previews
@@ -56,13 +56,8 @@ export default function CourseThumbnailForm({ form }: Props) {
               />
             </FormControl>
           </div>
-          <div className="w-2">
-            {!!field.value && (
-              <Avatar>
-                <AvatarImage src={profilePic} alt="@shadcn" />
-                <AvatarFallback>{profilePic}</AvatarFallback>
-              </Avatar>
-            )}
+          <div className="">
+           <img className='w-40' src={profilePic || src} />
           </div>
           <FormMessage />
         </FormItem>

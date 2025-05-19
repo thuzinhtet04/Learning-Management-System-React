@@ -9,17 +9,20 @@ import {
 // import { newCourseFormType } from '../useNewCourseForm';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { useForm, UseFormReturn } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Checkbox } from '@radix-ui/react-checkbox';
-import {  useQuery } from '@tanstack/react-query';
-import { getCourseById } from '@/features/authentication/service/services';
 
-export const newLessonFormSchema = z.object({
+import { useParams } from 'react-router-dom';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  createLesson,
+  getCourseByIdNormal,
+} from '@/features/authentication/service/services';
+
+const newLessonFormSchema = z.object({
   course_id: z.string(),
   title: z
     .string()
@@ -35,51 +38,49 @@ export const newLessonFormSchema = z.object({
   // lessons: z.array(lessonSchema),
 });
 
-export type NewCourseFormData = UseFormReturn<
-  z.infer<typeof newLessonFormSchema>
->;
+export type newLessonForm = z.infer<typeof newLessonFormSchema>;
 
 export default function CourseLessonForm() {
   const { courseId } = useParams();
 
-  const [lessons, setLessons] = useState([
-    {
-      lessonIndex: 1,
-      courseId: courseId!,
-      title: '',
-      lesson_detail: '',
-      video_url: '',
-      is_available: true,
+  const { data: courseData } = useQuery({
+    queryKey: [courseId, 'show'],
+    queryFn: () => {
+      return getCourseByIdNormal(courseId!);
     },
-  ]);
-  const { data } = useQuery({
-    queryKey: [courseId, 'show'] , 
-    queryFn : () => {
-      getCourseById(courseId!)
-    }
+  });
+  const { mutate } = useMutation({
+    mutationFn: (lessonData: newLessonForm) => {
+      return createLesson(courseId!, lessonData);
+    },
+    mutationKey: [courseId, 'lesson'],
+    onSuccess: () => {
+      form.reset();
+    },
   });
 
-  const form = useForm({
+  const form = useForm<newLessonForm>({
     resolver: zodResolver(newLessonFormSchema),
     defaultValues: {
-      course_id: courseId!,
+      course_id: courseId,
       title: '',
       lesson_detail: '',
       is_available: true,
       video_url: '',
     },
   });
-  const onSubmit = (data) => {
+
+  const onSubmit = (data: newLessonForm) => {
     console.log(data, 'lesson form data');
+    mutate({ ...data, course_id: courseId });
   };
 
-  console.log(data);
   return (
     <div className="space-y-4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
           <div className="border border-gray-600 p-4 rounded-lg space-y-2">
-            <h2>Create Lesson for {courseId}</h2>
+            <h2>Create Lesson for {courseData?.data.course_name}</h2>
             <FormField
               control={form.control}
               name={`title`}
@@ -102,7 +103,7 @@ export default function CourseLessonForm() {
                   <FormLabel>Lesson Details</FormLabel>
                   <FormControl>
                     <Textarea
-                    placeholder="Enter lesson details"
+                      placeholder="Enter lesson details"
                       className="resize-none"
                       {...field}
                     />
@@ -143,7 +144,7 @@ export default function CourseLessonForm() {
               )}
             />
 
-            <Button>Submit</Button>
+            <Button type="submit">Submit</Button>
           </div>
         </form>
       </Form>

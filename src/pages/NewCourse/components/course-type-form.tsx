@@ -16,9 +16,10 @@ import { newCourseFormType } from '../useNewCourseForm';
 
 type Props = {
   form: newCourseFormType;
+  type? : string
 };
 
-export default function CourseTypeForm({ form }: Props) {
+export default function CourseTypeForm({ form , type }: Props) {
   return (
     <FormField
       control={form.control}
@@ -27,15 +28,15 @@ export default function CourseTypeForm({ form }: Props) {
         return (
           <FormItem>
             <FormLabel>Type</FormLabel>
-            <Select onValueChange={field.onChange} value={field.value}>
+            <Select onValueChange={field.onChange} value={field.value || type}  >
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select Type" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="free">Free</SelectItem>
                 <SelectItem value="paid">Paid</SelectItem>
+                <SelectItem value="free">Free</SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />

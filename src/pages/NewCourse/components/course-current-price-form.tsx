@@ -10,9 +10,10 @@ import { Input } from '@/components/ui/input';
 
 type Props = {
   form: newCourseFormType;
+  curPrice? : number | string
 };
 
-export default function CourseCurrentPriceForm({ form }: Props) {
+export default function CourseCurrentPriceForm({ form , curPrice }: Props) {
   return (
     <FormField
       control={form.control}
@@ -21,7 +22,7 @@ export default function CourseCurrentPriceForm({ form }: Props) {
         <FormItem>
           <FormLabel>Current Price</FormLabel>
           <FormControl>
-            <Input type="number" placeholder="Current Price" {...field} />
+            <Input type="number" placeholder="Current Price" {...field} value={field.value || curPrice} onChange={field.onChange} />
           </FormControl>
           <FormMessage />
         </FormItem>

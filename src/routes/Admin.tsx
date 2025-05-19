@@ -21,6 +21,7 @@ import VideoPlayer from '@/pages/StudentCourseDetails/components/VideoPlayer';
 import Dashboard from '@/pages/Dashboard/Dashboard';
 import StudentProfile from '@/pages/profile/studentProfile';
 import CreateLessons from '@/pages/NewCourse/components/CreateLessons';
+import EditCourse from '@/pages/NewCourse/EditCourse';
 
 export default function Admin() {
   return useRoutes([
@@ -44,6 +45,10 @@ export default function Admin() {
         {
           path: 'courses/new',
           element: <NewCourse />,
+        },
+        {
+          path: 'courses/edit',
+          element: <EditCourse />,
         },
         {
           path: 'courses/:courseId/lessons/new',

@@ -135,6 +135,7 @@ export interface courseDetails {
   enrollment: enrollment[];
   instructor_user?: InstructorUser;
   instructorEducation: string;
+  is_available : boolean
 }
 
 export interface enrollment {

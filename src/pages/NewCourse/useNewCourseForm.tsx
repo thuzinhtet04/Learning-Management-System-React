@@ -15,16 +15,16 @@ export const newCourseFormSchema = z.object({
   //   message: 'courseName must be at least 2 characters.',
   // }),
   category_id: z.number({ required_error: 'Category Name is required' }),
-  category_name: z.string(),
+  category_name: z.string().default("sample category"),
   type: z.string({ required_error: 'type is required' }),
   level: z.string({ required_error: 'level is required' }),
   description: z.string({ required_error: 'description is required' }),
-  duration: z.coerce.string({ required_error: 'duration is required' }),
-  original_price: z.coerce.number().positive(),
-  current_price: z.coerce.number().positive(),
+  duration: z.coerce.number({ required_error: 'duration is required' }),
+  original_price: z.any(),
+  current_price: z.any(),
   // available: z.boolean().default(),
   thumbnail: z
-    .instanceof(File)
+    .instanceof(File).optional()
     // .refine((file) => file.size <=  5 * 1024 * 1024 , 'File size is too large.'),
   // lessons: z.array(lessonSchema),
 });
@@ -34,7 +34,7 @@ export type NewCourseFormData = UseFormReturn<
 >;
 
 export default function useNewCourseForm(
-  // courseId: number | undefined
+ 
 ): NewCourseFormData {
   const form = useForm({
     resolver: zodResolver(newCourseFormSchema),
@@ -46,7 +46,7 @@ export default function useNewCourseForm(
       level: 'beginner',
       description: '',
       thumbnail:  undefined,
-      duration: '1 hours',
+      duration: 0 ,
       original_price: 0,
       current_price: 0,
       // available: true,

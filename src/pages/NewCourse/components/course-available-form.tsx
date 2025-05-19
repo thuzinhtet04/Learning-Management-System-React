@@ -3,6 +3,7 @@ import {
   
   FormItem,
   FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 // import { newCourseFormType } from '../useNewCourseForm';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -20,12 +21,13 @@ export default function CourseAvailableForm({
     <FormItem className="flex items-end gap-1 mb-2">
       <FormControl>
         <Checkbox
-          checked={is_available}
+          checked={is_available }
           onCheckedChange={(checked) => setIsAvailable(checked === true)}
         />
       </FormControl>
 
-      <FormLabel>Available</FormLabel>
+      <FormLabel>Set Public</FormLabel>
+      <FormMessage />
     </FormItem>
   );
 }

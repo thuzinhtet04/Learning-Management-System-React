@@ -10,9 +10,10 @@ import { Input } from '@/components/ui/input';
 
 type Props = {
   form: newCourseFormType;
+  name? : string
 };
 
-export default function CourseNameForm({ form }: Props) {
+export default function CourseNameForm({ form , name }: Props) {
   return (
     <FormField
       control={form.control}
@@ -21,9 +22,9 @@ export default function CourseNameForm({ form }: Props) {
         <FormItem>
           <FormLabel>Course Name</FormLabel>
           <FormControl>
-            <Input placeholder="course name" {...field} />
+            <Input placeholder="course name" name={field.name} value={ field.value || name } onChange={field.onChange}  />
           </FormControl>
-          <FormMessage />
+                    <FormMessage />
         </FormItem>
       )}
     />

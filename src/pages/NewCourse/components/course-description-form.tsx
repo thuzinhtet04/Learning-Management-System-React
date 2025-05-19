@@ -10,9 +10,10 @@ import { Textarea } from '@/components/ui/textarea';
 
 type Props = {
   form: newCourseFormType;
+  description? : string
 };
 
-export default function CourseDescriptionForm({ form }: Props) {
+export default function CourseDescriptionForm({ form , description}: Props) {
   return (
     <FormField
       control={form.control}
@@ -25,6 +26,7 @@ export default function CourseDescriptionForm({ form }: Props) {
               placeholder="Description"
               className="resize-none"
               {...field}
+              value={field.value || description}
             />
           </FormControl>
 

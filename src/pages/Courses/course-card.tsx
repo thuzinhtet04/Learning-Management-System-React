@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Course } from '../studentCourse/types';
 import { formatPrice } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
-import { getInstructorById } from '@/services';
 import { useMyCourses } from '@/store/useMyCourses';
 
 interface Props {
