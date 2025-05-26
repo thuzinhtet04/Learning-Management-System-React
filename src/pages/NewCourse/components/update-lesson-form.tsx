@@ -16,49 +16,46 @@ import { z } from 'zod';
 
 import { Checkbox } from '@/components/ui/checkbox';
 // import { useMutation, useQuery } from '@tanstack/react-query';
-import { createLesson } from '@/features/authentication/service/services';
-import { fetchCourseByInstructor } from '@/services';
-import { useAuthStore } from '@/store/authStore';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  getLessonById,
+  updateLesson,
+} from '@/features/authentication/service/services';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
 
 const newLessonFormSchema = z.object({
-  course_id: z.string(),
   title: z
     .string()
-    .min(5, { message: 'lesson title must be at least 5 character long' }),
+    .min(5, { message: 'lesson title must be at least 5 character long' })
+    .optional(),
   lesson_detail: z
     .string()
-    .min(10, { message: 'lesson details must be at least 5 character long' }),
+    .min(10, { message: 'lesson details must be at least 5 character long' })
+    .optional(),
   is_available: z.boolean().default(true),
   video_url: z
     .string()
     .min(5, { message: 'lesson video url must be at least 5 character long' })
-    .startsWith('https://', 'please enter valid video url link'),
-  // lessons: z.array(lessonSchema),
+    .startsWith('https://', 'please enter valid video url link')
+    .optional(),
 });
 
 export type newLessonForm = z.infer<typeof newLessonFormSchema>;
 
-export default function CourseLessonForm() {
-  const { authUser } = useAuthStore();
+export default function UpdateLessonForm() {
+  // const { authUser } = useAuthStore();
+  const { lessonId } = useParams();
 
-  const { data: courses } = useQuery({
-    queryKey: ['allCourses', 'instructor', authUser?.data.username],
-    queryFn: () =>
-      fetchCourseByInstructor('/courses?instructor=' + authUser?.data.username),
-    staleTime: 60 * 1000,
+  const { data: lesson, isLoading } = useQuery({
+    queryKey: ['show', 'lessons'],
+    queryFn: () => getLessonById(lessonId!),
+    // staleTime: 60 * 1000,
   });
+  console.log(lesson);
 
   const { mutate } = useMutation({
     mutationFn: (lessonData: newLessonForm) => {
-      return createLesson(lessonData.course_id, lessonData);
+      return updateLesson(lessonId!, lessonData);
     },
     mutationKey: [],
     onSuccess: () => {
@@ -69,25 +66,31 @@ export default function CourseLessonForm() {
   const form = useForm<newLessonForm>({
     resolver: zodResolver(newLessonFormSchema),
     defaultValues: {
-      course_id: undefined,
-      title: '',
-      lesson_detail: '',
-      is_available: true,
-      video_url: '',
+      title: lesson?.data.title,
+      lesson_detail: lesson?.data.lessonDetail,
+      is_available: lesson?.data?.is_available == 1 ? true : false,
+      video_url: lesson?.data.videoUrl,
     },
   });
 
   const onSubmit = (data: newLessonForm) => {
     console.log(data, 'lesson form data');
-    mutate(data);
+    console.log('submit');
+    mutate({
+      title: data.title ?? lesson.data.title,
+      lesson_detail: data.lesson_detail ?? lesson.data.lessonDetail,
+      video_url: data.video_url ?? lesson.data.videoURL,
+      is_available: data.is_available ?? lesson.data.is_available,
+    });
   };
+  if (isLoading) return <div>Loading ...</div>;
 
   return (
     <div className="space-y-4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
           <div className="border border-gray-600 p-4 rounded-lg space-y-2">
-            <FormField
+            {/* <FormField
               control={form.control}
               name="course_id" // or whatever your field name is
               render={({ field }) => (
@@ -103,7 +106,7 @@ export default function CourseLessonForm() {
                       </SelectTrigger>
                       <SelectContent>
                         {courses?.data.map((course) => (
-                          <SelectItem  key={course.id} value={`${course.id}`}>
+                          <SelectItem key={course.id} value={`${course.id}`}>
                             {course.course_name}
                           </SelectItem>
                         ))}
@@ -113,8 +116,7 @@ export default function CourseLessonForm() {
                   <FormMessage />
                 </FormItem>
               )}
-            />
-
+            /> */}
             <FormField
               control={form.control}
               name={`title`}
@@ -122,7 +124,12 @@ export default function CourseLessonForm() {
                 <FormItem>
                   <FormLabel>Lesson Title </FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter lesson title" {...field} />
+                    <Input
+                      placeholder="Enter lesson title"
+                      {...field}
+                      onChange={field.onChange}
+                      value={field.value ?? lesson.data.title}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -138,6 +145,7 @@ export default function CourseLessonForm() {
                     <Textarea
                       placeholder="Enter lesson details"
                       {...field}
+                      value={field.value ?? lesson?.data?.lessonDetail}
                       className="resize-none"
                     />
                   </FormControl>
@@ -152,7 +160,11 @@ export default function CourseLessonForm() {
                 <FormItem>
                   <FormLabel>Video Url</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter video URL" {...field} />
+                    <Input
+                      placeholder="Enter video URL"
+                      {...field}
+                      value={field.value ?? lesson?.data?.videoUrl}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -165,8 +177,8 @@ export default function CourseLessonForm() {
                 <FormItem className="flex items-end gap-1 mb-2">
                   <FormControl>
                     <Checkbox
-                      checked={field.value}
                       onCheckedChange={field.onChange}
+                      checked={field.value ?? lesson.data.is_available}
                     />
                   </FormControl>
 
@@ -174,15 +186,11 @@ export default function CourseLessonForm() {
                 </FormItem>
               )}
             />
+
             <Button type="submit">Submit</Button>
           </div>
         </form>
       </Form>
-      {/* <Button
-        type="button"
-      >
-        Add New Lesson
-      </Button> */}
     </div>
   );
 }

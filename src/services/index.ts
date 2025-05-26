@@ -1,19 +1,25 @@
 import { CourseResponse, instructor } from './../pages/studentCourse/types';
 import API from '@/features/authentication/service/api';
-import {
-  CourseDetailsResponse,
-  UserResponse,
-} from '@/pages/CourseDetails/types';
-import { AllCategoryResponse, AllCourseResponse } from '@/pages/Courses/types';
+import { UserResponse } from '@/pages/CourseDetails/types';
+import { AllCategoryResponse } from '@/pages/Courses/types';
 
 export async function getCourseById(formData: FormData) {
   const response = await API.post(`/courses`, formData);
   const data = await response.data;
-  console.log(data, "course create response data")
+  console.log(data, 'course create response data');
   return data.data;
-
 }
-
+export const deleteLesson = async ({ courseId, lessonId }) => {
+  console.log(courseId, lessonId, 'inside delete');
+  const res = await API.delete(`/courses/${courseId}/lessons/${lessonId}`);
+  const data = await res.data;
+  return data;
+};
+export const fetchLessons = async (page = 1) => {
+  const res = await API.get('/lessons?page=' + page);
+  const data = await res.data;
+  return data;
+};
 export const fetchCourseByInstructor = async (
   url: string,
   param: string = ''

@@ -41,17 +41,16 @@ export default function EditCourse() {
   const [is_available, setIsAvailable] = useState<boolean>(true);
   const { authUser } = useAuthStore();
 
-  const form = useNewCourseForm();
-
   const { data: courseData } = useQuery({
     queryKey: ['edit', 'course', courseId],
     queryFn: () => {
       return getCourseByIdNormal(`${courseId}`);
     },
   });
+
+  const form = useNewCourseForm(courseData);
   const { mutate, isPending } = useMutation({
     mutationFn: (data: FormData) => {
-    
       return editCourse(courseId!, data);
     },
     mutationKey: ['create', 'course'],
@@ -64,7 +63,7 @@ export default function EditCourse() {
         toast(message);
       } else {
         const res = await API.patch('/courses/unpublish/' + courseId, {
-          is_available: false,
+          "is_available": false,
         });
         await res.data;
         if (res.status) toast('Unpublish your course successfully ');
@@ -80,19 +79,46 @@ export default function EditCourse() {
     console.log('submit edit ', data);
     const formData = new FormData();
 
-    formData.append('course_name', data.course_name ?? courseData?.data.course_name);
+    formData.append(
+      'course_name',
+      data.course_name
+        ? data.course_name
+        : (courseData?.data.course_name as string)
+    );
     formData.append('category_id', String(data.category_id));
-    formData.append('type', data.type);
-    formData.append('level', data.level);
-    formData.append('description', data.description);
-    formData.append('duration', `${data.duration}`);
-    formData.append('original_price', String(data.original_price));
-    formData.append('current_price', String(data.current_price));
+    formData.append(
+      'type',
+      data.type ? `${data.type}` : (courseData?.data.type as string)
+    );
+    formData.append(
+      'level',
+      data.level ? `${data.level}` : (courseData?.data.level as string)
+    );
+    formData.append(
+      'description',
+      data.description || (courseData?.data.description as string)
+    );
+    formData.append(
+      'duration',
+      data.duration ? `${data.duration}` : `${courseData?.data.duration}`
+    );
+    formData.append(
+      'original_price',
+      data.original_price
+        ? String(data.original_price)
+        : String(courseData?.data.original_price)
+    );
+    formData.append(
+      'current_price',
+      data.current_price
+        ? String(data.current_price)
+        : String(courseData?.data.current_price)
+    );
     // min(2, {
     //   message: 'courseName must be at least 2 characters.',
     // }),
-    for(const [key , value] of formData.entries()){
-      console.log(key , value)
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
     }
 
     if (data.thumbnail && data.thumbnail instanceof File) {
@@ -100,7 +126,7 @@ export default function EditCourse() {
     }
 
     // mutate({...data , duration : "3" , original_price : "100" , current_price : "50"});
-    mutate(formData)
+    mutate(formData); //fix update course in php
   };
   const imagePlaceHolder =
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShpzLoP8w4TO5SHlH-boYRjN1Lth9K8QiHbQrDogf2MILT4rZ6E6Xvea1DegiYs81ld50&usqp=CAU';
@@ -174,7 +200,7 @@ export default function EditCourse() {
             <div className="col-span-7">
               <CourseThumbnailForm
                 form={form}
-                src={courseData?.data.thumbnail ? imagePlaceHolder : ''}
+                src={courseData?.data.thumbnail || imagePlaceHolder}
               />
             </div>
           </div>

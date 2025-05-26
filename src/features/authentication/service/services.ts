@@ -38,9 +38,8 @@ export const createCourse = async (courseData: FormData) => {
   return data.data;
 };
 export const editCourse = async (courseId: number, courseData: any) => {
-
   const res = await API.post('/courses/' + courseId, courseData);
-  console.log(res , 'res')
+  console.log(res, 'res');
   const data = await res.data;
   return data.data;
 };
@@ -94,6 +93,28 @@ export const fetchCourseDetails = async (courseId: string) => {
 export const createLesson = async (courseId: string, lessonData: unknown) => {
   try {
     const res = await API.post('/courses/' + courseId + '/lessons', lessonData);
+    const data = await res.data;
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+export const updateLesson = async (LessonId: string, lessonData: unknown) => {
+  try {
+    const res = await API.put('/lessons/' + LessonId, lessonData);
+    const data = await res.data;
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+export const getLessonById = async (lessonId: string) => {
+  try {
+    const res = await API.get('/lessons/' + lessonId);
     const data = await res.data;
     console.log(data);
     return data;

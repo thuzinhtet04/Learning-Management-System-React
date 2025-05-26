@@ -1,6 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
+import { CourseDetailsResponse } from '../CourseDetails/types';
+import { File } from 'lucide-react';
 
 // const lessonSchema = z.object({
 //   title: z.string().min(1, 'Title is required'),
@@ -15,17 +17,18 @@ export const newCourseFormSchema = z.object({
   //   message: 'courseName must be at least 2 characters.',
   // }),
   category_id: z.number({ required_error: 'Category Name is required' }),
-  category_name: z.string().default("sample category"),
-  type: z.string({ required_error: 'type is required' }),
-  level: z.string({ required_error: 'level is required' }),
+  category_name: z.string().default('sample category'),
+  type: z.string({ required_error: 'type is required' }).optional(),
+  level: z.string({ required_error: 'level is required' }).optional(),
   description: z.string({ required_error: 'description is required' }),
-  duration: z.coerce.number({ required_error: 'duration is required' }),
-  original_price: z.any(),
-  current_price: z.any(),
+  duration: z.coerce
+    .number({ required_error: 'duration is required' })
+    .optional(),
+  original_price: z.any().optional(),
+  current_price: z.any().optional(),
   // available: z.boolean().default(),
-  thumbnail: z
-    .instanceof(File).optional()
-    // .refine((file) => file.size <=  5 * 1024 * 1024 , 'File size is too large.'),
+  thumbnail: z.any().optional(),
+  // .refine((file) => file.size <=  5 * 1024 * 1024 , 'File size is too large.'),
   // lessons: z.array(lessonSchema),
 });
 
@@ -34,21 +37,21 @@ export type NewCourseFormData = UseFormReturn<
 >;
 
 export default function useNewCourseForm(
- 
+ courseData : CourseDetailsResponse | undefined 
 ): NewCourseFormData {
   const form = useForm({
     resolver: zodResolver(newCourseFormSchema),
     defaultValues: {
-      course_name: '',
-      category_id: undefined,
-      category_name: '',
-      type: 'free',
-      level: 'beginner',
-      description: '',
-      thumbnail:  undefined,
-      duration: 0 ,
-      original_price: 0,
-      current_price: 0,
+      course_name: courseData?.data.course_name ?? "",
+      category_id: courseData?.data.category.id ?? 0,
+      category_name: courseData?.data.category.name ?? "",
+      type: courseData?.data.type,
+      level: courseData?.data.level ,
+      description: courseData?.data.description ?? "",
+      thumbnail: courseData?.data.thumbnail,
+      duration: courseData?.data.duration  ,
+      original_price: courseData?.data.original_price ,
+      current_price: courseData?.data.current_price ,
       // available: true,
       // lessons: [],
     },

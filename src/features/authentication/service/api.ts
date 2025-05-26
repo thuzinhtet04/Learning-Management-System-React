@@ -18,7 +18,7 @@ API.interceptors.request.use((config) => {
 });
 
 API.interceptors.response.use(
-  (response) => response,
+  (response) => response, 
   async (error) => {
     if (error.response?.data?.message == 'TokenExpired') {
       const { refreshToken, login, logout } = useAuthStore.getState();

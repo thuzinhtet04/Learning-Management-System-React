@@ -1,6 +1,6 @@
 'use client';
 
-import { BookOpenCheckIcon, ChevronRight, type LucideIcon } from 'lucide-react';
+import { BookOpenCheckIcon, ChevronRight, List, type LucideIcon } from 'lucide-react';
 
 import {
   Collapsible,
@@ -44,35 +44,22 @@ type navMainProps = {
   }[];
 };
 
-export function MyCourses() {
+export function LessonsSideBar() {
   return (
     <Collapsible asChild defaultOpen={true} className="group/collapsible">
-      <Link to="/">
+      <Link to="/lessons">
         <SidebarMenuItem>
           <CollapsibleTrigger asChild>
             <SidebarMenuButton
-              tooltip="My Courses"
+              tooltip="Lessons"
               size={'lg'}
               className="[&>svg]:size-6 group-data-[collapsible=icon]:[&>svg]:ml-1"
             >
-              <BookOpenCheckIcon />
-              <span className="mt-1">My Courses</span>
+              <List />
+              <span className="mt-1">Lessons</span>
             </SidebarMenuButton>
           </CollapsibleTrigger>
-          <CollapsibleContent>
-            {/* <SidebarMenuSub className="space-y-5 ">
-            {item.items?.map((subItem) => (
-              <SidebarMenuSubItem key={subItem.title} className="mt-5">
-                <SidebarMenuSubButton asChild>
-                  <Link to={`${subItem.url}`}>
-                    <span>{subItem.title}</span>
-                  </Link>
-                </SidebarMenuSubButton>
-              </SidebarMenuSubItem>
-            ))}
-    
-          </SidebarMenuSub> */}
-          </CollapsibleContent>
+          
         </SidebarMenuItem>
       </Link>
     </Collapsible>

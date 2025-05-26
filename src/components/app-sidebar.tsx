@@ -27,6 +27,7 @@ import { MyCourses } from './MyCourses';
 import { AllCourseComponent } from './AllCoursesComponent';
 import { DashboardComponentSideBar } from './DashboardComponentSidebar';
 import { useAuthStore } from '@/store/authStore';
+import { LessonsSideBar } from './LessonsSideBar';
 
 // This is sample data.
 
@@ -55,7 +56,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         },
         {
           title: 'Lessons',
-          component: DashboardComponentSideBar,
+          component: LessonsSideBar,
         },
         {
           title: 'Student',

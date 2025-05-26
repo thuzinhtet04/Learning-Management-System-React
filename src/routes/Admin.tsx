@@ -1,7 +1,7 @@
 import {
   Navigate,
-  NonIndexRouteObject,
-  RouteObject,
+  // NonIndexRouteObject,
+  // RouteObject,
   useRoutes,
 } from 'react-router-dom';
 import {
@@ -12,7 +12,7 @@ import {
 } from './elements';
 
 // import CourseDetailPage from '@/pages/course/CourseDetailPage';
-import { useAuthStore } from '@/store/authStore';
+// import { useAuthStore } from '@/store/authStore';
 import { CoursePageTesting, Login, MainLayout, Register } from './elements';
 import Loader from '@/components/Loading';
 import CourseDetailPage from '@/pages/StudentCourseDetails/CourseDetailPage';
@@ -22,6 +22,8 @@ import Dashboard from '@/pages/Dashboard/Dashboard';
 import StudentProfile from '@/pages/profile/studentProfile';
 import CreateLessons from '@/pages/NewCourse/components/CreateLessons';
 import EditCourse from '@/pages/NewCourse/EditCourse';
+import LessonDataTable from '@/pages/InstructorDashboard/lesson-data-table';
+import UpdateLessonForm from '@/pages/NewCourse/components/update-lesson-form';
 
 export default function Admin() {
   return useRoutes([
@@ -51,8 +53,16 @@ export default function Admin() {
           element: <EditCourse />,
         },
         {
-          path: 'courses/:courseId/lessons/new',
+          path: 'lessons',
+          element: <LessonDataTable />,
+        },
+        {
+          path: '/lessons/new',
           element: <CreateLessons />,
+        },
+        {
+          path: '/lessons/:lessonId/edit',
+          element: <UpdateLessonForm />,
         },
         {
           path: 'courses/:courseId',
